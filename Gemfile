@@ -7,6 +7,7 @@ gem 'pg'
 
 gem 'omniauth'
 gem 'omniauth-github'
+gem 'octokit'
 
 gem 'jquery-rails'
 gem 'haml-rails'

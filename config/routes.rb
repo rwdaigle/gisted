@@ -2,6 +2,7 @@ Gisted::Application.routes.draw do
 
   
   root :to => 'homes#index'
+  match '/login', to: 'sessions#login', :as => :login
   match '/auth/github/callback', to: 'sessions#create', :via => [:post, :get]
   match '/auth/developer/callback', to: 'sessions#create', :via => [:post, :get]
 
