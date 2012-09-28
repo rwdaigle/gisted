@@ -87,6 +87,9 @@ GEM
       omniauth (~> 1.0)
     pg (0.14.1)
     polyglot (0.3.3)
+    queue_classic (2.0.1)
+      pg (~> 0.14.0)
+      scrolls (~> 0.2.1)
     rack (1.4.1)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -117,6 +120,7 @@ GEM
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
+    scrolls (0.2.3)
     sprockets (2.1.3)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -145,6 +149,7 @@ DEPENDENCIES
   omniauth
   omniauth-github
   pg
+  queue_classic
   rails (= 3.2.8)
   sass-rails (~> 3.2.3)
   thin

@@ -6,7 +6,11 @@ Gisted::Application.routes.draw do
   match '/logout', to: 'sessions#logout', :as => :logout
   match '/auth/github/callback', to: 'sessions#create', :via => [:post, :get], :as => :github_auth_callback
 
-  resources :gists, :only => :index
+  resources :gists do
+    collection do
+      post 'refresh'
+    end
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

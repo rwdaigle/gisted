@@ -1,4 +1,4 @@
-Your gists:
+= "Your gists (#{link_to("refresh", refresh_gists_path, :method => :post)}):".html_safe
 - for gist in @gists do
   / %p
   /   = gist.inspect
