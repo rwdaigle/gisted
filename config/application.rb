@@ -60,7 +60,6 @@ module Gisted
     config.assets.version = '1.0'
 
     config.middleware.use OmniAuth::Builder do
-      provider :developer unless Rails.env.production?
       provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], :scope => "gist"
     end
   end

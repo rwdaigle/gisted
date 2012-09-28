@@ -1,17 +1,4 @@
-Your gists:
-- for gist in @gists do
-  / %p
-  /   = gist.inspect
-  %p
-    = link_to gist.description, gist.html_url
-    = "(#{gist.public ? "Public" : "Private"})"
-    %br/
-    = "Created on #{gist.created_at.to_datetime.to_formatted_s(:short)}, last updated on #{gist.updated_at.to_datetime.to_formatted_s(:short)}"
-    %ul
-      %li
-        = "#{pluralize(gist.files.size, "file")}:"
-        %ul
-          - gist.files.each do |name, file|
-            %li
-              = link_to(file.filename, file.raw_url)
-              = "- #{file.language} (#{file.type}), #{file['size'] / 1028}kb"
+%h4 Hi there
+
+%p= link_to "Login", login_path
+%p= link_to "Logout", logout_path
