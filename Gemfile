@@ -7,6 +7,8 @@ gem 'pg'
 
 gem 'omniauth'
 gem 'omniauth-github'
+gem 'rack-worker'
+gem 'dalli'
 gem 'octokit'
 gem 'queue_classic'
 

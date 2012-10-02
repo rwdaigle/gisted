@@ -62,5 +62,7 @@ module Gisted
     config.middleware.use OmniAuth::Builder do
       provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], :scope => "gist"
     end
+
+    # config.middleware.use Rack::Worker # errors... :(
   end
 end
