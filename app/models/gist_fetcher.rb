@@ -2,21 +2,28 @@ class GistFetcher
 
   class << self
 
-    def fetch_user_gists(user_id)
+    def fetch(user_id)
       user = User.find(user_id)
-      gh_client(user).gists.each do |gh_gist|
-        # TODO add Scrolls logging
+      gh = gh_client(user)
+      fetch_gists(gh, user)
+      fetch_files(gh, user)
+    end
+
+    protected
+
+    # Make sure have all gist stubs imported
+    def fetch_gists(gh, user)
+      gh.gists.each do |gh_gist|
         Gist.import(gh_gist)
       end
     end
 
-    # Fetch individual gists from API (needed only for additional info?)
-    # def fetch_gist(user_id, gist_gh_id)
-    #   user = User.find(user_id)
-    #   gh_gist = user.gh_client.gist(gist_gh_id)
-    #   # TODO: Persist gist
-    #   # Gist.transfer_from_gh(user_id, gh_gist)
-    # end
+    # Fetch individual gists from API to get file contents
+    def fetch_files(gh, user)
+      user.gists.pluck(:gh_id).each do |gh_gist_id|
+        GistFile.import(gh.gist(gh_gist_id))
+      end
+    end
 
     private
 

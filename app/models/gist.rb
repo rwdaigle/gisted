@@ -8,14 +8,6 @@ class Gist < ActiveRecord::Base
   class << self
 
     def import(gh_gist)
-      gist = import_gist(gh_gist)
-      gist.import_files(gh_gist)
-      gist
-    end
-
-    protected
-
-    def import_gist(gh_gist)
 
       user = User.where(gh_id: gh_gist.user.id).first
       gh_id = gh_gist['id']
@@ -31,14 +23,8 @@ class Gist < ActiveRecord::Base
         existing_gist.update_attributes(attributes)
         existing_gist
       else
-        Gist.create(attributes)
+        create(attributes)
       end
-    end
-  end
-
-  def import_files(gh_gist)
-    gh_gist.files.each do |filename, gh_file|
-      GistFile.import(id, gh_file)
     end
   end
 end
