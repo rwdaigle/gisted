@@ -1,24 +1,24 @@
 class User < ActiveRecord::Base
 
-  attr_accessible :gh_avatar_url, :gh_oauth_token, :gh_url, :gh_username
+  attr_accessible :gh_id, :gh_email, :gh_name, :gh_avatar_url, :gh_oauth_token, :gh_url, :gh_username
+
+  has_many :gists, :dependent => :destroy
 
   class << self
 
-    def authorize(auth)
-      token = auth.credentials.token
-      user = User.find_by_gh_oauth_token(token)
-      user = create_from_gh_oauth(token, auth) unless user
-      return user
-    end
+    def authenticate(auth)
 
-    def create_from_gh_oauth(token, auth)
-      gh_username, gh_avatar_url, gh_url = auth.info.nickname, auth.info.image, auth.info.GitHub
-      User.create(gh_oauth_token: token, gh_username: gh_username, gh_avatar_url: gh_avatar_url, gh_url: gh_url)
-    end
-  end
+      attributes = {
+        gh_id: auth.uid, gh_oauth_token: auth.credentials.token, gh_username: auth.info.nickname, gh_name: auth.info.name,
+        gh_email: auth.info.email, gh_avatar_url: auth.info.image, gh_url: auth.info.urls.GitHub
+      }
 
-  # Don't like this hear, but it's convenient for now
-  def gh_client
-    @gh_client ||= Octokit::Client.new(:login => gh_username, :oauth_token => gh_oauth_token)
+      if(existing_user = User.where(gh_id: auth.uid).first)
+        existing_user.update_attributes(attributes)
+        existing_user
+      else
+        User.create(attributes)
+      end
+    end
   end
 end

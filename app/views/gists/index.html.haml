@@ -3,15 +3,15 @@
   / %p
   /   = gist.inspect
   %p
-    = link_to gist.description, gist.html_url
-    = "(#{gist.public ? "Public" : "Private"})"
+    = link_to gist.description, gist.url
+    = "(#{gist.public? ? "Public" : "Private"})"
     %br/
-    = "Created on #{gist.created_at.to_datetime.to_formatted_s(:short)}, last updated on #{gist.updated_at.to_datetime.to_formatted_s(:short)}"
+    = "Created on #{gist.gh_created_at.to_datetime.to_formatted_s(:short)}, last updated on #{gist.gh_updated_at.to_datetime.to_formatted_s(:short)}"
     %ul
       %li
-        = "#{pluralize(gist.files.size, "file")}:"
+        = "#{pluralize(gist.files.count, "file")}:"
         %ul
-          - gist.files.each do |name, file|
+          - gist.files.each do |file|
             %li
               = link_to(file.filename, file.raw_url)
-              = "- #{file.language} (#{file.type}), #{file['size'] / 1028}kb"
+              = "- #{file.language} (#{file.file_type}), #{file.size_bytes / 1028}kb"

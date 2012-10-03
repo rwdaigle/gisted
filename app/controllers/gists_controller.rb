@@ -5,11 +5,11 @@ class GistsController < ApplicationController
   before_filter :force_user_login
 
   def index
-    @gists = [] #current_user.gh_client.gists
+    @gists = current_user.gists
   end
 
   def refresh
-    puts QC.enqueue("GistFetcher.fetch", current_user.id)
+    QC.enqueue("GistFetcher.fetch_user_gists", current_user.id)
     redirect_to gists_path
   end
 end
