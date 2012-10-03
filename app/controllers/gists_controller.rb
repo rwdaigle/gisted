@@ -5,7 +5,7 @@ class GistsController < ApplicationController
   before_filter :force_user_login
 
   def index
-    @gists = current_user.gists
+    @gists = current_user.gists.includes(:files)
   end
 
   def refresh

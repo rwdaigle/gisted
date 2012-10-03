@@ -9,7 +9,7 @@
     = "Created on #{gist.gh_created_at.to_datetime.to_formatted_s(:short)}, last updated on #{gist.gh_updated_at.to_datetime.to_formatted_s(:short)}"
     %ul
       %li
-        = "#{pluralize(gist.files.count, "file")}:"
+        = "#{pluralize(gist.files.size, "file")}:"
         %ul
           - gist.files.each do |file|
             %li
