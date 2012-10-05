@@ -5,7 +5,7 @@ class GistsController < ApplicationController
   before_filter :force_user_login
 
   def index
-    @gists = current_user.gists.includes(:files)
+    @gists = current_user.gists.order("gh_created_at DESC").includes(:files)
   end
 
   def search
