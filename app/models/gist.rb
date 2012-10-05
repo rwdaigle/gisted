@@ -42,7 +42,7 @@ class Gist < ActiveRecord::Base
     end
 
     def search(q)
-      Scrolls.log(ns: self, fn: __method__, query: q) do
+      log(ns: self, fn: __method__, query: q) do
         tire.search do
           query { string q }
           sort { by :gh_created_at, 'desc' }
