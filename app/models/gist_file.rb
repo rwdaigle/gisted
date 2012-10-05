@@ -27,4 +27,13 @@ class GistFile < ActiveRecord::Base
       end
     end
   end
+
+  def indexed_attributes
+    {
+      name: filename,
+      content: content,
+      language: language,
+      type: file_type
+    }
+  end
 end

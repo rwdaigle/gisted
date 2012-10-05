@@ -7,6 +7,7 @@ class GistFetcher
       gh = gh_client(user)
       fetch_gists(gh, user)
       fetch_files(gh, user)
+      update_search_indices(user)
     end
 
     protected
@@ -23,6 +24,10 @@ class GistFetcher
       user.gists.pluck(:gh_id).each do |gh_gist_id|
         GistFile.import(gh.gist(gh_gist_id))
       end
+    end
+
+    def update_search_indices(user)
+      user.gists.each { |gist| gist.update_index }
     end
 
     private

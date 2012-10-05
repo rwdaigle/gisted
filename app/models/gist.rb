@@ -1,9 +1,17 @@
 class Gist < ActiveRecord::Base
 
-  attr_accessible :gh_id, :user_id, :description, :url, :git_pull_url, :git_push_url, :public, :comment_count, :gh_created_at, :gh_updated_at
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+
+  attr_accessible :gh_id, :user_id, :description, :url, :git_pull_url, :git_push_url, :public,
+    :comment_count, :gh_created_at, :gh_updated_at
 
   belongs_to :user
   has_many :files, :class_name => 'GistFile', :dependent => :delete_all
+
+  mapping do
+    indexes :description, :analyzer => 'whitespace', :boost => 10
+  end
 
   class << self
 
@@ -26,5 +34,20 @@ class Gist < ActiveRecord::Base
         create(attributes)
       end
     end
+  end
+
+  # Required for Tire/Elasticsearch
+  def to_indexed_json
+    indexed_attributes.to_json
+  end
+
+  def indexed_attributes
+    {
+      description: description,
+      public: public?,
+      gh_created_at: gh_created_at,
+      gh_updated_at: gh_updated_at,
+      files: files.collect(&:indexed_attributes)
+    }
   end
 end

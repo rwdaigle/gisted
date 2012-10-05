@@ -11,6 +11,10 @@ gem 'rack-worker'
 gem 'dalli'
 gem 'octokit'
 gem 'queue_classic'
+# gem 'indextank'
+# gem 'faraday-stack', '~> 0.1.5' # https://github.com/flaptor/indextank-rb/issues/8
+gem 'tire'
+gem 'yajl-ruby'
 
 gem 'jquery-rails'
 gem 'haml-rails'
