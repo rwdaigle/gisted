@@ -2,7 +2,17 @@ class GistFetcher
 
   class << self
 
-    def fetch(user_id)
+    def fetch
+      period = ENV['FETCH_INTERVAL_MINS'] ? ENV['FETCH_INTERVAL_MINS'].to_i : 1440
+      since = period.minutes.ago
+      log({ns: self, fn: __method__}, since: since) do
+        User.last_fetched_before(since).pluck(:id) do |user_id|
+          fetch_user(user_id)
+        end
+      end
+    end
+
+    def fetch_user(user_id)
       user = User.find(user_id)
       log({ns: self, fn: __method__}, user) do
         gh = gh_client(user)
@@ -10,6 +20,7 @@ class GistFetcher
         fetch_files(gh, user)
         update_search_indices(user)
       end
+      user.update_attribute(:last_gh_fetch, Time.now)
     end
 
     protected

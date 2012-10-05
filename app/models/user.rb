@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
 
   has_many :gists, :dependent => :destroy
 
+  scope :last_fetched_before, lambda { |since| where(["last_gh_fetch < ?", since])}
+
   class << self
 
     def authenticate(auth)
