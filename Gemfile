@@ -15,6 +15,7 @@ gem 'queue_classic'
 # gem 'faraday-stack', '~> 0.1.5' # https://github.com/flaptor/indextank-rb/issues/8
 gem 'tire'
 gem 'yajl-ruby'
+gem 'will_paginate'
 gem 'scrolls'
 gem 'lograge'
 gem 'newrelic_rpm'
