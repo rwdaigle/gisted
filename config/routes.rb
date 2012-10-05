@@ -7,9 +7,13 @@ Gisted::Application.routes.draw do
   match '/logout', to: 'sessions#logout', :as => :logout
   match '/auth/github/callback', to: 'sessions#create', :via => [:post, :get], :as => :github_auth_callback
 
-  resources :gists do
+  # Though this was an option at one time?
+  all = [:index, :show, :new, :create, :edit, :update, :destroy]
+
+  resources :gists, :except => all do
     collection do
       post 'refresh'
+      get 'refresh'
       get 'search'
     end
   end

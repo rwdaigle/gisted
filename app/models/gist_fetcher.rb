@@ -36,6 +36,7 @@ class GistFetcher
       log({ns: self, fn: __method__}, user) do
         user.gists.each { |gist| gist.update_index }
       end
+      Gist.tire.index.refresh
     end
 
     private
