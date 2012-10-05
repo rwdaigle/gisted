@@ -1,7 +1,6 @@
 class Gist < ActiveRecord::Base
 
   include Tire::Model::Search
-  include Tire::Model::Callbacks
 
   attr_accessible :gh_id, :user_id, :description, :url, :git_pull_url, :git_push_url, :public,
     :comment_count, :gh_created_at, :gh_updated_at
