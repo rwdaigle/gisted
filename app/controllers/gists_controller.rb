@@ -9,7 +9,7 @@ class GistsController < ApplicationController
   end
 
   def search
-    @results = Gist.search params[:q]
+    @results = Gist.search(current_user, params[:q])
   end
 
   def refresh

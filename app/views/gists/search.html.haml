@@ -2,6 +2,7 @@
 
 %ul
   - for result in @results
+    / %p= result.inspect
     - if result.highlight
       %li
         %p= link_to((result.highlight.description ? result.highlight['description'].first.html_safe : result.description), result.url)

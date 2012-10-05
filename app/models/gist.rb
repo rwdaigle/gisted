@@ -11,6 +11,7 @@ class Gist < ActiveRecord::Base
   mapping do
     indexes :description, :analyzer => 'snowball', :boost => 10
     indexes :gh_created_at, type: 'date'
+    indexes :user_id, :analyzer => :not_analyzed
     indexes :files do
       indexes :filename, analyzer: 'keyword'
       indexes :content, analyzer: 'snowball'
@@ -44,11 +45,12 @@ class Gist < ActiveRecord::Base
       end
     end
 
-    def search(q)
-      log(ns: self, fn: __method__, query: q) do
+    def search(user, q)
+      log({ns: self, fn: __method__, query: q}, user) do
         tire.search do
           query { string q }
           sort { by :gh_created_at, 'desc' }
+          filter :term, :user_id => user.id
           highlight :description, :'files.content'
         end
       end
@@ -73,6 +75,7 @@ class Gist < ActiveRecord::Base
 
   def indexed_attributes
     {
+      user_id: user_id,
       description: description,
       url: url,
       public: public?,
