@@ -19,13 +19,20 @@ class GistFile < ActiveRecord::Base
         }
 
         if(existing_file = where(gist_id: gist.id, filename: gh_file.filename).first)
+          log({ns: self, fn: __method__}, gist, existing_file)
           existing_file.update_attributes(attributes)
           existing_file
         else
-          create(attributes)
+          new_file = create(attributes)
+          log({ns: self, fn: __method__}, gist, new_file)
+          new_file
         end
       end
     end
+  end
+
+  def to_log
+    { file_id: id, file_filename: filename }
   end
 
   def indexed_attributes

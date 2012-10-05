@@ -34,10 +34,13 @@ class Gist < ActiveRecord::Base
       }
 
       if(existing_gist = where(gh_id: gh_id).first)
+        log({ns: self, fn: __method__}, user, existing_gist)
         existing_gist.update_attributes(attributes)
         existing_gist
       else
-        create(attributes)
+        new_gist = create(attributes)
+        log({ns: self, fn: __method__}, user, new_gist)
+        new_gist
       end
     end
 
@@ -52,9 +55,15 @@ class Gist < ActiveRecord::Base
     end
 
     def reindex
-      find_each { |gist| gist.update_index }
-      tire.index.refresh
+      log({ns: self, fn: __method__}) do
+        find_each { |gist| gist.update_index }
+        tire.index.refresh
+      end
     end
+  end
+
+  def to_log
+    { gist_id: id, gist_gh_id: gh_id, gist_description: description }
   end
 
   # Required for Tire/Elasticsearch

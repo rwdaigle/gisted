@@ -14,11 +14,18 @@ class User < ActiveRecord::Base
       }
 
       if(existing_user = User.where(gh_id: auth.uid).first)
+        log({ns: self, fn: __method__}, existing_user)
         existing_user.update_attributes(attributes)
         existing_user
       else
-        User.create(attributes)
+        new_user = User.create(attributes)
+        log({ns: self, fn: __method__}, new_user)
+        new_user
       end
     end
+  end
+
+  def to_log
+    { user: gh_username, user_id: id, user_email: gh_email }
   end
 end
