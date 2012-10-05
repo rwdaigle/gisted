@@ -42,10 +42,12 @@ class Gist < ActiveRecord::Base
     end
 
     def search(q)
-      tire.search do
-        query { string q }
-        sort { by :gh_created_at, 'desc' }
-        highlight :description, :'files.content'
+      Scrolls.log(ns: self, fn: __method__, query: q) do
+        tire.search do
+          query { string q }
+          sort { by :gh_created_at, 'desc' }
+          highlight :description, :'files.content'
+        end
       end
     end
 

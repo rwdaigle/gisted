@@ -59,6 +59,9 @@ GEM
     json (1.7.5)
     jwt (0.1.5)
       multi_json (>= 1.0)
+    lograge (0.0.6)
+      actionpack
+      activesupport
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -159,6 +162,7 @@ DEPENDENCIES
   dalli
   haml-rails
   jquery-rails
+  lograge
   octokit
   omniauth
   omniauth-github
@@ -167,6 +171,7 @@ DEPENDENCIES
   rack-worker
   rails (= 3.2.8)
   sass-rails (~> 3.2.3)
+  scrolls
   thin
   tire
   uglifier (>= 1.0.3)

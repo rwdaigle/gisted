@@ -64,5 +64,7 @@ module Gisted
     end
 
     # config.middleware.use Rack::Worker # errors... :(
+
+    config.lograge.enabled = true
   end
 end
