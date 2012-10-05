@@ -1,0 +1,10 @@
+= "Search for \"#{params[:q]}\""
+
+%ul
+  - for result in @results
+    %li
+      %p= link_to (result.highlight.description ? result.highlight['description'].first.html_safe : result.description), result.url
+      - if(result.highlight[:'files.content'])
+        - result.highlight[:'files.content'].each do |highlight|
+          %p
+            %code= highlight.html_safe

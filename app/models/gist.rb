@@ -9,7 +9,14 @@ class Gist < ActiveRecord::Base
   has_many :files, :class_name => 'GistFile', :dependent => :delete_all
 
   mapping do
-    indexes :description, :analyzer => 'whitespace', :boost => 10
+    indexes :description, :analyzer => 'snowball', :boost => 10
+    indexes :gh_created_at, type: 'date'
+    indexes :files do
+      indexes :filename, analyzer: 'keyword'
+      indexes :content, analyzer: 'snowball'
+      indexes :language, analyzer: 'keyword'
+      indexes :file_type, analyzer: 'keyword'
+    end
   end
 
   class << self
@@ -33,6 +40,19 @@ class Gist < ActiveRecord::Base
         create(attributes)
       end
     end
+
+    def search(q)
+      tire.search do
+        query { string q }
+        sort { by :gh_created_at, 'desc' }
+        highlight :description, :'files.content'
+      end
+    end
+
+    def reindex
+      find_each { |gist| gist.update_index }
+      tire.index.refresh
+    end
   end
 
   # Required for Tire/Elasticsearch
@@ -43,6 +63,7 @@ class Gist < ActiveRecord::Base
   def indexed_attributes
     {
       description: description,
+      url: url,
       public: public?,
       gh_created_at: gh_created_at,
       gh_updated_at: gh_updated_at,

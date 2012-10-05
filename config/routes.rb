@@ -10,6 +10,7 @@ Gisted::Application.routes.draw do
   resources :gists do
     collection do
       post 'refresh'
+      get 'search'
     end
   end
 

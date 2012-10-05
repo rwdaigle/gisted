@@ -8,6 +8,10 @@ class GistsController < ApplicationController
     @gists = current_user.gists.includes(:files)
   end
 
+  def search
+    @results = Gist.search params[:q]
+  end
+
   def refresh
     QC.enqueue("GistFetcher.fetch", current_user.id)
     redirect_to gists_path

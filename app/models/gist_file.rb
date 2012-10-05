@@ -2,7 +2,7 @@ class GistFile < ActiveRecord::Base
 
   attr_accessible :gist_id, :filename, :raw_url, :language, :file_type, :content, :size_bytes
 
-  belongs_to :gist
+  belongs_to :gist, :touch => true
 
   class << self
 
@@ -30,10 +30,11 @@ class GistFile < ActiveRecord::Base
 
   def indexed_attributes
     {
-      name: filename,
+      filename: filename,
       content: content,
       language: language,
-      type: file_type
+      file_type: file_type,
+      size_bytes: size_bytes
     }
   end
 end
