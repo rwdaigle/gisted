@@ -18,6 +18,7 @@ gem 'yajl-ruby'
 gem 'scrolls'
 gem 'lograge'
 gem 'newrelic_rpm'
+gem 'airbrake'
 
 gem 'jquery-rails'
 gem 'haml-rails'
