@@ -16,12 +16,12 @@ class User < ActiveRecord::Base
       }
 
       if(existing_user = User.where(gh_id: auth.uid).first)
-        log({ns: self, fn: __method__}, existing_user)
+        log({ns: self, fn: __method__, measure: true, at: 'user-authenticated'}, existing_user)
         existing_user.update_attributes(attributes)
         existing_user
       else
         new_user = User.create(attributes)
-        log({ns: self, fn: __method__}, new_user)
+        log({ns: self, fn: __method__, measure: true, at: 'user-created'}, new_user)
         new_user
       end
     end

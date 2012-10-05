@@ -35,19 +35,20 @@ class Gist < ActiveRecord::Base
       }
 
       if(existing_gist = where(gh_id: gh_id).first)
-        log({ns: self, fn: __method__}, user, existing_gist)
+        log({ns: self, fn: __method__, measure: true, at: 'gist-imported'}, user, existing_gist)
         existing_gist.update_attributes(attributes)
         existing_gist
       else
         new_gist = create(attributes)
-        log({ns: self, fn: __method__}, user, new_gist)
+        log({ns: self, fn: __method__, measure: true, at: 'gist-created'}, user, new_gist)
         new_gist
       end
     end
 
     def search(user, q)
       q = q.blank? ? '*' : q
-      log({ns: self, fn: __method__, query: q}, user) do
+      log({ns: self, fn: __method__, query: q, measure: true, at: 'search'}, user)
+      log({ns: self, fn: __method__, query: q, measure: true}, user) do
         tire.search do
           query { string q }
           sort { by :gh_created_at, 'desc' }

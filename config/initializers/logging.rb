@@ -34,6 +34,10 @@ module EventLogger
     end
 
   end
+
+  def log(*segments, &block)
+    self.class.log(*segments, &block)
+  end
 end
 
 class Hash

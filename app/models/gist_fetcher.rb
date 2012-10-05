@@ -27,7 +27,7 @@ class GistFetcher
 
     # Make sure have all gist stubs imported
     def fetch_gists(gh, user)
-      log({ns: self, fn: __method__}, user) do
+      log({ns: self, fn: __method__, measure: true}, user) do
         gh.gists.each do |gh_gist|
           Gist.import(gh_gist)
         end
@@ -36,7 +36,7 @@ class GistFetcher
 
     # Fetch individual gists from API to get file contents
     def fetch_files(gh, user)
-      log({ns: self, fn: __method__}, user) do
+      log({ns: self, fn: __method__, measure: true}, user) do
         user.gists.pluck(:gh_id).each do |gh_gist_id|
           GistFile.import(gh.gist(gh_gist_id))
         end
