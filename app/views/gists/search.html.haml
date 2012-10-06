@@ -3,7 +3,7 @@
     = label_tag(:q, "Search your gists:")
     = text_field_tag(:q, params[:q])
     = submit_tag("Go")
-    = "(last updated: #{current_user.last_gh_fetch.to_formatted_s(:short)})"
+    = "(last updated: #{current_user.last_gh_fetch ? current_user.last_gh_fetch.to_formatted_s(:short) : "not yet"})"
 
 %ul
   - for result in @results

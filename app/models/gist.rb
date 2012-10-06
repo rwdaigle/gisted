@@ -48,16 +48,19 @@ class Gist < ActiveRecord::Base
     end
 
     def search(user, q)
-      q = q.blank? ? '*' : q
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search'}, user)
-      log({ns: self, fn: __method__, query: q, measure: true}, user) do
-        tire.search do
-          query { string q }
-          sort { by :gh_created_at, 'desc' }
-          filter :term, :user_id => user.id
-          highlight :description, :'files.content'
-          size 15
+      if(!q.blank?)
+        log({ns: self, fn: __method__, query: q, measure: true}, user) do
+          tire.search do
+            query { string q }
+            sort { by :gh_created_at, 'desc' }
+            filter :term, :user_id => user.id
+            highlight :description, :'files.content'
+            size 15
+          end
         end
+      else
+        []
       end
     end
 

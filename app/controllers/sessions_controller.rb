@@ -13,6 +13,6 @@ class SessionsController < ApplicationController
     user = User.authenticate(request.env['omniauth.auth'])
     log_in_user(user.id)
     redirect_to search_gists_path
-    log({ns: self, fn: __method__, measure: true, at: 'login'}, user)
+    log({ns: self.class, fn: __method__, measure: true, at: 'login'}, user)
   end
 end
