@@ -27,6 +27,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def fetched?
+    !last_gh_fetch.nil?
+  end
+
   def to_log
     { user: gh_username, user_id: id, user_email: gh_email }
   end

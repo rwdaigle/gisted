@@ -12,7 +12,8 @@ class SessionsController < ApplicationController
   def create
     user = User.authenticate(request.env['omniauth.auth'])
     log_in_user(user.id)
-    redirect_to search_gists_path
     log({ns: self.class, fn: __method__, measure: true, at: 'login'}, user)
+    QC.enqueue("GistFetcher.fetch_user", user.id) if !user.fetched?
+    redirect_to search_gists_path
   end
 end
