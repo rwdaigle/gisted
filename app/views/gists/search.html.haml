@@ -1,4 +1,9 @@
-= "Search for \"#{params[:q]}\""
+%p
+  = form_tag(search_gists_path, :method => "get") do
+    = label_tag(:q, "Search your gists:")
+    = text_field_tag(:q, params[:q])
+    = submit_tag("Go")
+    = "(last updated: #{current_user.last_gh_fetch.to_formatted_s(:short)})"
 
 %ul
   - for result in @results
@@ -13,3 +18,8 @@
     - else
       %li
         %p= link_to(result.description, result.url)
+
+:javascript
+  $(function() {
+    $('#q').select();
+  })
