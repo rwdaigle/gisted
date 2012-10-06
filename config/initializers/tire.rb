@@ -1,7 +1,9 @@
 require 'yajl/json_gem'
 
 Tire.configure do
-  url ENV['SEARCHBOX_URL']
+  url ENV['BASE_BONSAI_URL']
+  BONSAI_INDEX_NAME = ENV['BONSAI_INDEX_URL'][/[^\/]+$/]
+  # url ENV['SEARCHBOX_URL']
   logger STDOUT, :level => ENV['LOG_LEVEL']
 end
 

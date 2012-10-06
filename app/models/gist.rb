@@ -8,6 +8,8 @@ class Gist < ActiveRecord::Base
   belongs_to :user
   has_many :files, :class_name => 'GistFile', :dependent => :delete_all
 
+  index_name BONSAI_INDEX_NAME
+
   mapping do
     indexes :description, :analyzer => 'snowball', :boost => 10
     indexes :gh_created_at, type: 'date'
