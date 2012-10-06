@@ -20,6 +20,7 @@ gem 'scrolls'
 gem 'lograge'
 gem 'newrelic_rpm'
 gem 'airbrake'
+gem 'kanshi', :require => false
 
 gem 'jquery-rails'
 gem 'haml-rails'
