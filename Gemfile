@@ -13,6 +13,7 @@ gem 'memcachier'
 gem 'dalli'
 gem 'octokit'
 gem 'queue_classic'
+# gem 'clockwork'
 # gem 'indextank'
 # gem 'faraday-stack', '~> 0.1.5' # https://github.com/flaptor/indextank-rb/issues/8
 gem 'tire'
