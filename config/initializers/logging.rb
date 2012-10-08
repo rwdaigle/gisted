@@ -25,6 +25,10 @@ module EventLogger
       Scrolls.log(log_data_from(*segments), &block)
     end
 
+    def log_exception(*segments, exception)
+      Scrolls.log_exception(log_data_from(*segments), exception)
+    end
+
     private
 
     def log_data_from(*segments)
@@ -37,6 +41,10 @@ module EventLogger
 
   def log(*segments, &block)
     self.class.log(*segments, &block)
+  end
+
+  def log_exception(*segments, exception)
+    self.class.log_exception(*segments, exception)
   end
 end
 

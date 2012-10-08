@@ -193,6 +193,7 @@ DEPENDENCIES
   queue_classic
   rack-worker
   rails (= 3.2.8)
+  rake
   sass-rails (~> 3.2.3)
   scrolls
   thin
