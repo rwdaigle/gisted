@@ -12,15 +12,16 @@ class GistedWorker < QC::Worker
   # modify logging (wanted info log statement on delete_job)
   def work
     if job = lock_job
-      QC.log_yield(:level => :info, :action => "work_job", :job => job[:id]) do
+      QC.log_yield(:action => "work_job", :job => job[:id]) do
         begin
           call(job)
+          log(:action => "finished_work", :job => job[:id])
         rescue Object => e
-          log(:level => :info, :action => "failed_work", :job => job[:id], :error => e.inspect)
+          log(:action => "failed_work", :job => job[:id], :error => e.inspect)
           handle_failure(job, e)
         ensure
           @queue.delete(job[:id])
-          log(:level => :info, :action => "delete_job", :job => job[:id])
+          log(:action => "delete_job", :job => job[:id])
         end
       end
     end
