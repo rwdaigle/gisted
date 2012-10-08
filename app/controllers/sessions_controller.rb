@@ -12,8 +12,13 @@ class SessionsController < ApplicationController
   def create
     user = User.authenticate(request.env['omniauth.auth'])
     log_in_user(user.id)
-    log({ns: self.class, fn: __method__, measure: true, at: 'login'}, user)
-    QC.enqueue("GistFetcher.fetch_user", user.id) if !user.fetched?
-    redirect_to search_gists_path
+    if(user.fetched?)
+      log({ns: self.class, fn: __method__, measure: true, at: 'repeat-login'}, user)
+      redirect_to search_gists_path
+    else
+      log({ns: self.class, fn: __method__, measure: true, at: 'first-login'}, user)
+      QC.enqueue("GistFetcher.fetch_user", user.id)
+      redirect_to status_gists_path
+    end
   end
 end

@@ -1,0 +1,18 @@
+%h4 Indexing status
+%p
+  = "Indexing #{current_user.gists_count} gists and #{current_user.files_count} files..."
+
+- if !current_user.fetched?
+  :javascript
+    $(function() {
+      setTimeout(function() {
+        location.reload();
+      }, 1500);
+    });
+- else
+  :javascript
+    $(function() {
+      setTimeout(function() {
+        location = "#{search_gists_path}";
+      }, 1500);
+    })

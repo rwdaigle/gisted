@@ -15,6 +15,7 @@ Gisted::Application.routes.draw do
       post 'refresh'
       get 'refresh'
       get 'search'
+      get 'status'
     end
   end
 

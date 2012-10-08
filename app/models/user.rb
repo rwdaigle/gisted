@@ -27,6 +27,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def gists_count
+    @gists_count ||= gists.count
+  end
+
+  def files_count
+    @files_count ||= gists.includes(:files).sum { |g| g.files.size }
+  end
+
   def fetched?
     !last_gh_fetch.nil?
   end
