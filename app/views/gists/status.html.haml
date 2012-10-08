@@ -1,6 +1,12 @@
-%h4 Indexing status
+%h3 Indexing status
 %p
   = "Indexing #{current_user.gists_count} gists and #{current_user.files_count} files..."
+  - if current_user.fetched?
+    %b done
+%p
+  = link_to "Go to gist search", search_gists_path
+  - if !current_user.fetched?
+    %em (results may not be complete until indexing completes)
 
 - if !current_user.fetched?
   :javascript
@@ -14,5 +20,5 @@
     $(function() {
       setTimeout(function() {
         location = "#{search_gists_path}";
-      }, 1500);
+      }, 750);
     })
