@@ -20,6 +20,7 @@ gem 'will_paginate'
 gem 'scrolls'
 gem 'lograge'
 gem 'newrelic_rpm'
+gem 'newrelic-faraday'
 gem 'airbrake'
 gem 'kanshi', :require => false
 

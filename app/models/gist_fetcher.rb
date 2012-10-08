@@ -2,6 +2,8 @@ class GistFetcher
 
   class << self
 
+    include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+
     def fetch
       period = ENV['FETCH_INTERVAL_MINS'] ? ENV['FETCH_INTERVAL_MINS'].to_i : 1440
       since = period.minutes.ago
@@ -22,6 +24,8 @@ class GistFetcher
       end
       user.update_attribute(:last_gh_fetch, Time.now)
     end
+    
+    add_transaction_tracer :fetch_user, :category => :task, :params => '{ :user_id => args[0] }'
 
     protected
 
