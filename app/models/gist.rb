@@ -55,7 +55,7 @@ class Gist < ActiveRecord::Base
             query { string q }
             sort { by :gh_created_at, 'desc' }
             filter :term, :user_id => user.id
-            highlight :description, :'files.content'
+            highlight :description, :'files.content', :options => { :tag => "<b>" }
             size 15
           end
         end
