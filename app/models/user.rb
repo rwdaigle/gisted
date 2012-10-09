@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   attr_accessible :gh_id, :gh_email, :gh_name, :gh_avatar_url, :gh_oauth_token, :gh_url, :gh_username
 
   has_many :gists, :dependent => :destroy
+  has_many :files, :through => :gists
 
   scope :last_fetched_before, lambda { |since| where(["last_gh_fetch < ? OR last_gh_fetch IS NULL", since])}
 
@@ -32,7 +33,7 @@ class User < ActiveRecord::Base
   end
 
   def files_count
-    @files_count ||= gists.includes(:files).sum { |g| g.files.size }
+    @files_count ||= files.count
   end
 
   def fetched?
