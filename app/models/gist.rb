@@ -49,7 +49,7 @@ class Gist < ActiveRecord::Base
 
     def search(user, q)
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search'}, user)
-      if(!q.blank?)
+      results = if(!q.blank?)
         log({ns: self, fn: __method__, query: q, measure: true}, user) do
           tire.search do
             query { string q }
@@ -62,6 +62,9 @@ class Gist < ActiveRecord::Base
       else
         []
       end
+
+      log({ns: self, fn: __method__, query: q, measure: true, at: 'search-results'}, {:'result-count' => results.size}, user)
+      results
     end
 
     def reindex
