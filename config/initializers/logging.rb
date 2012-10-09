@@ -33,7 +33,7 @@ module EventLogger
 
     def log_data_from(*segments)
       segments.inject({}) do |map, segment|
-        map.merge!(segment.to_log)
+        segment.nil? ? map : map.merge!(segment.to_log)
       end
     end
 

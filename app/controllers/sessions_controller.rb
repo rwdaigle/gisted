@@ -21,4 +21,8 @@ class SessionsController < ApplicationController
       redirect_to status_gists_path
     end
   end
+
+  def failure
+    log({ns: self.class, fn: __method__, measure: true, at: 'login-failure'}, request.env['omniauth.auth'])    
+  end
 end

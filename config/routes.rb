@@ -6,6 +6,7 @@ Gisted::Application.routes.draw do
   match '/login', to: 'sessions#login', :as => :login
   match '/logout', to: 'sessions#logout', :as => :logout
   match '/auth/github/callback', to: 'sessions#create', :via => [:post, :get], :as => :github_auth_callback
+  match '/auth/failure', to: 'sessions#failure'
 
   # Though this was an option at one time?
   all = [:index, :show, :new, :create, :edit, :update, :destroy]
