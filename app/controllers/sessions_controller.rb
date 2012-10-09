@@ -12,6 +12,7 @@ class SessionsController < ApplicationController
   def create
     user = User.authenticate(request.env['omniauth.auth'])
     log_in_user(user.id)
+    log({ns: self.class, fn: __method__, measure: true, at: 'login'}, user)
     if(user.fetched?)
       log({ns: self.class, fn: __method__, measure: true, at: 'repeat-login'}, user)
       redirect_to search_gists_path
