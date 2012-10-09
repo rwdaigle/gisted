@@ -8,6 +8,9 @@ Gisted::Application.routes.draw do
   match '/auth/github/callback', to: 'sessions#create', :via => [:post, :get], :as => :github_auth_callback
   match '/auth/failure', to: 'sessions#failure'
 
+  # Monitoring
+  match '/heartbeat', to: 'monitors#heartbeat', :as => :heartbeat
+
   # Though this was an option at one time?
   all = [:index, :show, :new, :create, :edit, :update, :destroy]
 
