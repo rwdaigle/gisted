@@ -3,6 +3,11 @@
   = "Indexing #{current_user.gists_count} gists and #{current_user.files_count} files..."
   - if current_user.fetched?
     %b done
+%p
+  %em
+    This may take a few minutes, depending on the number of gists and files. Please wait for indexing to complete before
+    = link_to("searching", search_gists_path)
+
 / %p
 /   = link_to "Go to gist search", search_gists_path
 /   - if !current_user.fetched?
