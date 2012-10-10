@@ -6,15 +6,17 @@ class GistsController < ApplicationController
 
   JUMP_CHAR = '!'
 
-  def index
-    @gists = current_user.gists.order("gh_created_at DESC").includes(:files)
-  end
+  # def index
+  #   @gists = current_user.gists.order("gh_created_at DESC").includes(:files)
+  # end
 
   def search
-    @results = Gist.search(current_user, normalized_query)
-    if(feeling_lucky_directive? && lucky_result = @results.first)
-      redirect_to lucky_result.url
-      log({ns: self.class, fn: __method__, measure: true, at: 'auto-jump', query: params[:q]}, {:'redirect-to' => lucky_result.url}, current_user)
+    if stale?(etag: search_etag, last_modified: current_user.last_gh_fetch)
+      @results = Gist.search(current_user, normalized_query)
+      if(feeling_lucky_directive? && lucky_result = @results.first)
+        redirect_to lucky_result.url
+        log({ns: self.class, fn: __method__, measure: true, at: 'auto-jump', query: params[:q]}, {:'redirect-to' => lucky_result.url}, current_user)
+      end
     end
   end
 
@@ -32,6 +34,10 @@ class GistsController < ApplicationController
 
   def feeling_lucky_directive?
     params[:q] && JUMP_CHAR == params[:q].last
+  end
+
+  def search_etag
+    "#{CACHE_VERSION}-#{current_user.id}-#{params[:q]}"
   end
 
 end
