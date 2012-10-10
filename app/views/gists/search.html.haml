@@ -17,7 +17,7 @@
             %span.matches= highlights[0..(highlights.size < 2 ? -1 : 1)].join(' . . . ')
       - else
         %li
-          %p= link_to(result.description, result.url)
+          %p= search_result_link(result)
 - else
   %p= "No results found for \"#{params[:q]}\""
 

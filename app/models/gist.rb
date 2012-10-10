@@ -15,10 +15,10 @@ class Gist < ActiveRecord::Base
     indexes :gh_created_at, type: 'date'
     indexes :user_id, :analyzer => :not_analyzed
     indexes :files do
-      indexes :filename, analyzer: 'keyword'
+      indexes :filename, analyzer: 'standard', :boost => 5
       indexes :content, analyzer: 'snowball'
       indexes :language, analyzer: 'keyword'
-      indexes :file_type, analyzer: 'keyword'
+      indexes :file_type, analyzer: 'standard'
     end
   end
 
