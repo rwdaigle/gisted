@@ -49,18 +49,21 @@ class Gist < ActiveRecord::Base
 
     def search(user, q)
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search'}, user)
-      results = if(!q.blank?)
-        log({ns: self, fn: __method__, query: q, measure: true}, user) do
-          tire.search do
-            query { string q }
-            # sort { by :gh_created_at, 'desc' }
-            filter :term, :user_id => user.id
-            highlight :description, :'files.content', :options => { :tag => "<b>" }
-            size 15
+
+      results = Rails.cache.fetch(search_cache_key(user, q)) do
+        if(!q.blank?)
+          log({ns: self, fn: __method__, query: q, measure: true}, user) do
+            tire.search do
+              query { string q }
+              # sort { by :gh_created_at, 'desc' }
+              filter :term, :user_id => user.id
+              highlight :description, :'files.content', :options => { :tag => "<b>" }
+              size 15
+            end
           end
+        else
+          []
         end
-      else
-        []
       end
 
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search-results'}, {:'result-count' => results.size}, user)
@@ -72,6 +75,10 @@ class Gist < ActiveRecord::Base
         find_each { |gist| gist.update_index }
         tire.index.refresh
       end
+    end
+
+    def search_cache_key(user, q)
+      "#{CACHE_VERSION}-user_id:#{user.id}-updated_at:#{user.last_gh_fetch ? user.last_gh_fetch.to_i : "never"}-#{q}"
     end
   end
 
