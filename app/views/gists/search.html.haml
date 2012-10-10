@@ -8,10 +8,10 @@
 - if @results.size > 0
   %ul
     - for result in @results
-      / %p= result.inspect
+      / # %p= result.inspect
       - if result.highlight
         %li
-          %p= link_to((result.highlight.description ? result.highlight['description'].first.html_safe : result.description), result.url)
+          %p= search_result_link(result)
           - if(result.highlight[:'files.content'])
             - highlights = result.highlight[:'files.content']
             %span.matches= highlights[0..(highlights.size < 2 ? -1 : 1)].join(' . . . ')
