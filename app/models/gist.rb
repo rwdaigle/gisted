@@ -78,7 +78,7 @@ class Gist < ActiveRecord::Base
     end
 
     def search_cache_key(user, q)
-      "#{CACHE_VERSION}-user_id:#{user.id}-updated_at:#{user.last_gh_fetch ? user.last_gh_fetch.to_i : "never"}-#{q}"
+      "#{Rails.env.production? ? CACHE_VERSION : SecureRandom.hex}-user_id:#{user.id}-updated_at:#{user.last_gh_fetch ? user.last_gh_fetch.to_i : "never"}-#{q}"
     end
   end
 

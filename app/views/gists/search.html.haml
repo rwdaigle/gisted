@@ -8,16 +8,12 @@
 - if @results.size > 0
   %ul
     - for result in @results
-      / # %p= result.inspect
-      - if result.highlight
-        %li
-          %p= search_result_link(result)
-          - if(result.highlight[:'files.content'])
-            - highlights = result.highlight[:'files.content']
-            %span.matches= highlights[0..(highlights.size < 2 ? -1 : 1)].join(' . . . ')
-      - else
-        %li
-          %p= search_result_link(result)
+      %li
+        %p= search_result_link(result)
+        / %p.files= files_display(result)
+        / - if(result.highlight && result.highlight[:'files.content'])
+        /   - highlights = result.highlight[:'files.content']
+        /   %span.matches= highlights[0..(highlights.size < 2 ? -1 : 1)].join(' . . . ')
 - else
   %p= "No results found for \"#{params[:q]}\""
 
