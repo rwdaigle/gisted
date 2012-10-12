@@ -19,7 +19,9 @@
     - for result in @results
       %li(style="#{search_result_styles(result)}")
         = search_result_link(result)
-        %span.meta= "modified #{distance_of_time_in_words_to_now(result.gh_updated_at)} ago"
+        %span.meta
+          %span.modified-at= "modified #{distance_of_time_in_words_to_now(result.gh_updated_at)} ago"
+          %span.comments= "#{pluralize(result.comment_count, "comments")}"
         / %p= result.inspect
 - else
   %p= "No results found for \"#{params[:q]}\""
