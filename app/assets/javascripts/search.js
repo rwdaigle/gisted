@@ -1,9 +1,32 @@
+// Initial page load b/f Turbolinks kicks in
 $(function() {
+  wireSearch();
+  setInitialElementStates();
+});
+
+// Subsequent loads
+$(window).bind('page:load', function() {
+  setInitialElementStates();
+});
+
+var setInitialElementStates = function() {
+  searchField().select();
+
+  // Pass form submits through Turbolinks
+  $("#search-form").submit(function() {
+    form = $(this);
+    Turbolinks.visit(form.attr('action') + '?' + form.serialize());
+    return false;
+  });  
+};
+
+var searchField = function() {
+  return $("#search-form #q");
+};
+
+var wireSearch = function() {
 
   var selectedClass = 'selected';
-  var searchField = $("#search-form #q");
-
-  searchField.select();
 
   Mousetrap.bind(['down'], function(e) {
     navigateList('down', $("ul.search-results li:first"));
@@ -24,7 +47,7 @@ $(function() {
 
   Mousetrap.bind(['/', 's'], function(e) {
     executeOutsideInputFields(e, function() {
-      searchField.focus().select();
+      searchField().focus().select();
       $("ul.search-results li.selected").removeClass(selectedClass);
       haltEvent(e);
     });
@@ -42,13 +65,13 @@ $(function() {
 
     if(previouslySelectedEl.size() <= 0) {
       defaultEl.addClass(selectedClass);
-      searchField.blur();
+      searchField().blur();
     } else {
       previouslySelectedEl.removeClass(selectedClass);
       newlySelectedEl = direction == 'up' ? previouslySelectedEl.prev() : previouslySelectedEl.next();
       newlySelectedEl.addClass(selectedClass);
       if(newlySelectedEl.size() <= 0) {
-        searchField.focus();
+        searchField().focus();
       }
     }
   }
@@ -61,9 +84,8 @@ $(function() {
   };
 
   var executeOutsideInputFields = function(event, fire) {
-    console.log($(event.srcElement));
     if(!$(event.srcElement).is('input')) {
       fire();
     }
   }
-});
+};
