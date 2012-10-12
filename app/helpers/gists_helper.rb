@@ -12,4 +12,10 @@ module GistsHelper
       content_tag(:script, nil, :src => "#{result.url}.js?file=#{file.filename}")
     end.join("<br/>").html_safe
   end
+
+  def search_result_styles(result)
+    styles = result.public? ? 'public' : 'private'
+    styles += result.starred? ? ' starred' : ''
+    styles += ' ' + result['files.language'].collect(&:downcase).uniq.join(' ')
+  end
 end
