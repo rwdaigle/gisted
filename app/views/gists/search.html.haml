@@ -10,6 +10,7 @@
     - for result in @results
       %li
         %p= search_result_link(result)
+        / %p= result.inspect
         / %p.files= files_display(result)
         / - if(result.highlight && result.highlight[:'files.content'])
         /   - highlights = result.highlight[:'files.content']

@@ -55,9 +55,10 @@ class Gist < ActiveRecord::Base
           log({ns: self, fn: __method__, query: q, measure: true}, user) do
             tire.search do
               query { string q }
+              fields [:description, :url, :public, :gh_updated_at, :id]
               # sort { by :gh_created_at, 'desc' }
               filter :term, :user_id => user.id
-              highlight :description, :'files.content', :options => { :tag => "<b>" }
+              highlight :description, :options => { :tag => "<em>" }
               size 15
             end
           end
