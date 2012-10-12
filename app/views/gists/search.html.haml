@@ -9,9 +9,9 @@
 
 %p
   = form_tag(search_gists_path, :method => "get", :id => "search-form") do
-    = label_tag(:q, "Search your gists:")
+    = image_tag("#{current_user.gh_avatar_url}&s=25")
     = text_field_tag(:q, params[:q], :size => 50, :class => "mousetrap")
-    = submit_tag("Go")
+    = submit_tag("Search")
     = "(last indexed: #{current_user.last_gh_fetch ? current_user.last_gh_fetch.to_formatted_s(:short) : "not yet"})"
 
 - if @results.size > 0
