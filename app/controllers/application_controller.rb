@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   end
 
   def force_user_login
-    redirect_to login_path unless user_logged_in?
+    redirect_to("/auth/github?origin=#{request.fullpath}") unless user_logged_in?
   end
 
   def current_user

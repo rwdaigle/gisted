@@ -1,9 +1,5 @@
 class SessionsController < ApplicationController
 
-  def login
-    redirect_to "/auth/github"
-  end
-
   def logout
     log_out_user
     redirect_to root_path
@@ -15,7 +11,7 @@ class SessionsController < ApplicationController
     log({ns: self.class, fn: __method__, measure: true, at: 'login'}, user)
     if(user.fetched?)
       log({ns: self.class, fn: __method__, measure: true, at: 'repeat-login'}, user)
-      redirect_to search_gists_path
+      redirect_to(request.env['omniauth.origin'] || search_gists_path)
     else
       log({ns: self.class, fn: __method__, measure: true, at: 'first-login'}, user)
       QC.enqueue("GistFetcher.fetch_user", user.id)
