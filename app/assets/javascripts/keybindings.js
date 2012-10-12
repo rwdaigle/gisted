@@ -16,15 +16,18 @@ $(function() {
   });
 
   Mousetrap.bind(['enter', 'o'], function(e) {
-    if(goToSelectedResult()) {
+    executeOutsideInputFields(e, function() {
+      goToSelectedResult();
       haltEvent(e);
-    }
+    });
   });
 
-  Mousetrap.bind(['/', 's', 'escape'], function(e) {
-    searchField.focus().select();
-    $("ul.search-results li.selected").removeClass(selectedClass);
-    haltEvent(e);
+  Mousetrap.bind(['/', 's'], function(e) {
+    executeOutsideInputFields(e, function() {
+      searchField.focus().select();
+      $("ul.search-results li.selected").removeClass(selectedClass);
+      haltEvent(e);
+    });
   });
 
   var haltEvent = function(event) {
@@ -54,9 +57,13 @@ $(function() {
     selectedEl = $("ul.search-results li.selected");
     if(selectedEl.size() >= 1) {
       location.href = selectedEl.find("a.gist-url").attr('href');
-      return true;
-    } else {
-      return false;
     }
   };
+
+  var executeOutsideInputFields = function(event, fire) {
+    console.log($(event.srcElement));
+    if(!$(event.srcElement).is('input')) {
+      fire();
+    }
+  }
 });
