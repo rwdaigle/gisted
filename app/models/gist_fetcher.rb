@@ -28,8 +28,13 @@ class GistFetcher
     # Make sure have all gist stubs imported
     def fetch_gists(gh, user)
       log({ns: self, fn: __method__, measure: true}, user) do
-        gh.gists.each do |gh_gist|
-          Gist.import(gh_gist)
+        begin
+          gh.gists.each do |gh_gist|
+            Gist.import(gh_gist)
+          end
+        rescue Exception => e
+          Airbrake.notify(e, parameters: user.to_log)
+          log({ns: self, fn: __method__, measure: true, at: :exception, message: e.message, exception: e.class}, user)
         end
       end
     end
@@ -38,7 +43,12 @@ class GistFetcher
     def fetch_files(gh, user)
       log({ns: self, fn: __method__, measure: true}, user) do
         user.gists.pluck(:gh_id).each do |gh_gist_id|
-          GistFile.import(gh.gist(gh_gist_id))
+          begin
+            GistFile.import(gh.gist(gh_gist_id))
+          rescue Exception => e
+            Airbrake.notify(e, parameters: user.to_log.merge(gh_gist_id: gh_gist_id))
+            log({ns: self, fn: __method__, measure: true, gh_gist_id: gh_gist_id, at: :exception, message: e.message, exception: e.class}, user)
+          end
         end
       end
     end
