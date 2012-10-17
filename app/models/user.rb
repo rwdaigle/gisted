@@ -26,6 +26,23 @@ class User < ActiveRecord::Base
         new_user
       end
     end
+
+    def refresh_index(user_id)
+      user = User.find(user_id)
+      log({ns: self, fn: __method__}, user) do
+        user.gists.each { |gist| gist.update_index }
+      end
+      Gist.tire.index.refresh
+    end
+
+    def fetched!(user_id)
+      user = User.find(user_id)
+      user.fetched!
+    end
+  end
+
+  def fetched!
+    update_attribute(:last_gh_fetch, Time.now)
   end
 
   def gists_count

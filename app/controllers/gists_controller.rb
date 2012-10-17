@@ -21,7 +21,7 @@ class GistsController < ApplicationController
   end
 
   def refresh
-    QC.enqueue("GistFetcher.fetch_user", current_user.id)
+    QC.enqueue("GistFetcher.fetch_gists", current_user.id)
     redirect_to search_gists_path
   end
 

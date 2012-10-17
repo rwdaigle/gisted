@@ -7,57 +7,34 @@ class GistFetcher
       since = period.minutes.ago
       log({ns: self, fn: __method__}, since: since) do
         User.last_fetched_before(since).pluck(:id).each do |user_id|
-          fetch_user(user_id)
+          QC.enqueue("GistFetcher.fetch_gists", user_id)
         end
       end
     end
 
-    def fetch_user(user_id)
+    def fetch_gists(user_id)
+
       user = User.find(user_id)
-      log({ns: self, fn: __method__}, user) do
-        gh = gh_client(user)
-        fetch_gists(gh, user)
-        fetch_files(gh, user)
-        update_search_indices(user)
-      end
-      user.update_attribute(:last_gh_fetch, Time.now)
-    end
+      gh = gh_client(user)
 
-    protected
-
-    # Make sure have all gist stubs imported
-    def fetch_gists(gh, user)
       log({ns: self, fn: __method__, measure: true}, user) do
-        begin
-          gh.gists.each do |gh_gist|
-            Gist.import(gh_gist)
-          end
-        rescue Exception => e
-          Airbrake.notify(e, parameters: user.to_log)
-          log({ns: self, fn: __method__, measure: true, at: :exception, message: e.message, exception: e.class}, user)
+        gh.gists.each do |gh_gist|
+          Gist.import(gh_gist)
         end
-      end
-    end
-
-    # Fetch individual gists from API to get file contents
-    def fetch_files(gh, user)
-      log({ns: self, fn: __method__, measure: true}, user) do
         user.gists.pluck(:gh_id).each do |gh_gist_id|
-          begin
-            GistFile.import(gh.gist(gh_gist_id))
-          rescue Exception => e
-            Airbrake.notify(e, parameters: user.to_log.merge(gh_gist_id: gh_gist_id))
-            log({ns: self, fn: __method__, measure: true, gh_gist_id: gh_gist_id, at: :exception, message: e.message, exception: e.class}, user)
-          end
+          QC.enqueue("GistFetcher.fetch_gist_files", user_id, gh_gist_id)
         end
       end
+      QC.enqueue("User.refresh_index", user_id)
+      QC.enqueue("User.fetched!", user_id)
     end
 
-    def update_search_indices(user)
-      log({ns: self, fn: __method__}, user) do
-        user.gists.each { |gist| gist.update_index }
+    def fetch_gist_files(user_id, gh_gist_id)
+      user = User.find(user_id)
+      log({ns: self, fn: __method__, measure: true, gh_gist_id: gh_gist_id}, user) do
+        gh = gh_client(user)
+        GistFile.import(gh.gist(gh_gist_id))
       end
-      Gist.tire.index.refresh
     end
 
     private

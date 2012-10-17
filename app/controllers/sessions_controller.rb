@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
       redirect_to(request.env['omniauth.origin'] || search_gists_path)
     else
       log({ns: self.class, fn: __method__, measure: true, at: 'first-login'}, user)
-      QC.enqueue("GistFetcher.fetch_user", user.id)
+      QC.enqueue("GistFetcher.fetch_gists", user.id)
       redirect_to status_gists_path
     end
   end
