@@ -19,12 +19,12 @@ class GistFile < ActiveRecord::Base
         }
 
         if(existing_file = where(gist_id: gist.id, filename: gh_file.filename).first)
-          log({ns: self, fn: __method__}, gist, existing_file)
+          log({ns: self, fn: __method__, at: "gist-file-updated"}, gist, existing_file)
           existing_file.update_attributes(attributes)
           existing_file
         else
           new_file = create(attributes)
-          log({ns: self, fn: __method__}, gist, new_file)
+          log({ns: self, fn: __method__, at: "gist-file-created"}, gist, new_file)
           new_file
         end
       end
