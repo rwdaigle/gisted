@@ -38,14 +38,14 @@ var wireSearch = function() {
     haltEvent(e);
   });
 
-  Mousetrap.bind(['enter', 'o'], function(e) {
+  Mousetrap.bind(['enter'], function(e) {
     executeOutsideInputFields(e, function() {
       goToSelectedResult();
       haltEvent(e);
     });
   });
 
-  Mousetrap.bind(['/', 's'], function(e) {
+  Mousetrap.bind(['/'], function(e) {
     executeOutsideInputFields(e, function() {
       searchField().focus().select();
       $(".display .choice.selected").removeClass(selectedClass);
@@ -68,7 +68,7 @@ var wireSearch = function() {
       searchField().blur();
     } else {
       previouslySelectedEl.removeClass(selectedClass);
-      newlySelectedEl = direction == 'up' ? previouslySelectedEl.prev() : previouslySelectedEl.next();
+      newlySelectedEl = direction == 'up' ? previouslySelectedEl.prev(".choice") : previouslySelectedEl.next(".choice");
       newlySelectedEl.addClass(selectedClass);
       if(newlySelectedEl.size() <= 0) {
         searchField().focus();
