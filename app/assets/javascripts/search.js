@@ -13,7 +13,7 @@ var setInitialElementStates = function() {
   searchField().select();
 
   // Pass form submits through Turbolinks
-  $("#search-form").submit(function() {
+  $("#top_search_form").submit(function() {
     form = $(this);
     Turbolinks.visit(form.attr('action') + '?' + form.serialize());
     return false;
@@ -21,7 +21,7 @@ var setInitialElementStates = function() {
 };
 
 var searchField = function() {
-  return $("#search-form #q");
+  return $("#top_search_form #command-bar");
 };
 
 var wireSearch = function() {
@@ -29,12 +29,12 @@ var wireSearch = function() {
   var selectedClass = 'selected';
 
   Mousetrap.bind(['down'], function(e) {
-    navigateList('down', $("ul.search-results li:first"));
+    navigateList('down', $(".display .choice:first"));
     haltEvent(e);
   });
 
   Mousetrap.bind(['up'], function(e) {
-    navigateList('up', $("ul.search-results li:last"));
+    navigateList('up', $(".display .choice:last"));
     haltEvent(e);
   });
 
@@ -48,7 +48,7 @@ var wireSearch = function() {
   Mousetrap.bind(['/', 's'], function(e) {
     executeOutsideInputFields(e, function() {
       searchField().focus().select();
-      $("ul.search-results li.selected").removeClass(selectedClass);
+      $(".display .choice.selected").removeClass(selectedClass);
       haltEvent(e);
     });
   });
@@ -61,7 +61,7 @@ var wireSearch = function() {
   // direction == up|down
   var navigateList = function(direction, defaultEl) {
 
-    previouslySelectedEl = $("ul.search-results li.selected");
+    previouslySelectedEl = $(".display .choice.selected");
 
     if(previouslySelectedEl.size() <= 0) {
       defaultEl.addClass(selectedClass);
@@ -77,7 +77,7 @@ var wireSearch = function() {
   }
 
   var goToSelectedResult = function() {
-    selectedEl = $("ul.search-results li.selected");
+    selectedEl = $(".display .choice.selected");
     if(selectedEl.size() >= 1) {
       location.href = selectedEl.find("a.gist-url").attr('href');
     }
