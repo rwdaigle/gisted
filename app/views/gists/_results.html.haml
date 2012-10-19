@@ -1,0 +1,11 @@
+- if @results.size > 0
+  - for result in @results
+    .choice
+      %span.command= search_result_link(result)
+      %span.description= pluralize(result.comment_count, "comments")
+  .hints
+    %em keyboard:
+    ↑ = up, ↓ = down, enter = follow link, / = search
+- else
+  .no-results
+    %span.command= "No results found. Bummer."

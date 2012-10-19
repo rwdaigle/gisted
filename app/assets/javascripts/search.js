@@ -5,19 +5,20 @@ $(function() {
 });
 
 // Subsequent loads
-$(window).bind('page:load', function() {
+$(window).bind('pjax:end', function() {
   setInitialElementStates();
 });
 
 var setInitialElementStates = function() {
+
   searchField().select();
 
-  // Pass form submits through Turbolinks
-  $("#top_search_form").submit(function() {
-    form = $(this);
-    Turbolinks.visit(form.attr('action') + '?' + form.serialize());
-    return false;
-  });  
+  // Make sure results html is displayed
+  if($("#results .choice").size() > 0) {
+    $("#results").show();
+  } else {
+    $("#results").hide();
+  }
 };
 
 var searchField = function() {
@@ -28,13 +29,23 @@ var wireSearch = function() {
 
   var selectedClass = 'selected';
 
+  // Pass form submits through PJAX
+  $("#top_search_form").submit(function() {
+    form = $(this);
+    $.pjax({
+      url: form.attr('action') + '?' + form.serialize(),
+      container: '#results'
+    })
+    return false;
+  }); 
+
   Mousetrap.bind(['down'], function(e) {
-    navigateList('down', $(".display .choice:first"));
+    navigateList('down', $("#results .choice:first"));
     haltEvent(e);
   });
 
   Mousetrap.bind(['up'], function(e) {
-    navigateList('up', $(".display .choice:last"));
+    navigateList('up', $("#results .choice:last"));
     haltEvent(e);
   });
 
@@ -48,7 +59,7 @@ var wireSearch = function() {
   Mousetrap.bind(['/'], function(e) {
     executeOutsideInputFields(e, function() {
       searchField().focus().select();
-      $(".display .choice.selected").removeClass(selectedClass);
+      $("#results .choice.selected").removeClass(selectedClass);
       haltEvent(e);
     });
   });
@@ -61,7 +72,7 @@ var wireSearch = function() {
   // direction == up|down
   var navigateList = function(direction, defaultEl) {
 
-    previouslySelectedEl = $(".display .choice.selected");
+    previouslySelectedEl = $("#results .choice.selected");
 
     if(previouslySelectedEl.size() <= 0) {
       defaultEl.addClass(selectedClass);
@@ -77,7 +88,7 @@ var wireSearch = function() {
   }
 
   var goToSelectedResult = function() {
-    selectedEl = $(".display .choice.selected");
+    selectedEl = $("#results .choice.selected");
     if(selectedEl.size() >= 1) {
       location.href = selectedEl.find("a.gist-url").attr('href');
     }

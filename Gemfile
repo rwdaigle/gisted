@@ -28,7 +28,7 @@ gem 'kanshi', :require => false
 
 gem 'jquery-rails'
 gem 'haml-rails'
-gem 'turbolinks'
+gem 'pjax_rails'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
