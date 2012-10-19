@@ -49,26 +49,33 @@ class Gist < ActiveRecord::Base
 
     def search(user, q)
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search'}, user)
-
-      results = Rails.cache.fetch(search_cache_key(user, q)) do
-        if(!q.blank?)
-          log({ns: self, fn: __method__, query: q, measure: true}, user) do
-            tire.search do
-              query { string q }
-              fields [:description, :url, :public, :gh_updated_at, :id, :comment_count, :'files.filename', :'files.language']
-              # sort { by :gh_created_at, 'desc' }
-              filter :term, :user_id => user.id
-              highlight :description, :options => { :tag => "<em>" }
-              size 15
+      results = []
+      begin
+        results = Rails.cache.fetch(search_cache_key(user, q)) do
+          if(!q.blank?)
+            log({ns: self, fn: __method__, query: q, measure: true}, user) do
+              tire.search do
+                query { string q }
+                fields [:description, :url, :public, :gh_updated_at, :id, :comment_count, :'files.filename', :'files.language']
+                # sort { by :gh_created_at, 'desc' }
+                filter :term, :user_id => user.id
+                highlight :description, :options => { :tag => "<em>" }
+                size 15
+              end
             end
+          else
+            []
           end
-        else
-          []
         end
-      end
 
-      log({ns: self, fn: __method__, query: q, measure: true, at: 'search-results'}, {:'result-count' => results.size}, user)
-      results
+        log({ns: self, fn: __method__, query: q, measure: true, at: 'search-results'}, {:'result-count' => results.size}, user)
+
+      rescue Exception => e
+        Airbrake.notify(e, :params => { :query => q }.merge(user.to_log))
+        log_exception({ns: self, fn: __method__, query: q, measure: true, at: 'exception'}, user)
+      ensure
+        return results
+      end
     end
 
     def reindex
