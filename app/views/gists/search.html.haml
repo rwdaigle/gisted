@@ -5,7 +5,7 @@
   = form_tag(search_gists_path, :method => "get", :id => "top_search_form", :class => "command_bar_form") do
     .commandbar.focused
       = text_field_tag(:q, params[:q], :size => 50, :class => "mousetrap", :id => "command-bar", :placeholder => "Search your gists", :tabindex => "1", :autocomplete => "off")
-      .display(style="display: block;")
+      .display(style="display: #{!params[:q].blank? ? "block" : "none"};")
         - if @results.size > 0
           - for result in @results
             .choice
@@ -13,7 +13,7 @@
               %span.description= pluralize(result.comment_count, "comments")
           .hints
             %em keyboard:
-            ↑ = up, ↓ = down, enter = go, / = search
+            ↑ = up, ↓ = down, enter = follow link, / = search
         - else
           .choice
             %span.command= "No results found. Bummer."
