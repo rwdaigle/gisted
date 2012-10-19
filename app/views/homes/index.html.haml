@@ -1,4 +1,12 @@
-%h4 Hi there
-%p Gisted lets you quickly search and access your gists. You will need to log into GitHub via OAuth first.
+%span.site-logo(style="margin-top: -3px;")
+  Gisted
 
-%p= link_to "Login & search my gists", search_gists_path, 'data-no-turbolink' => true
+.topsearch.command-bar-activated
+  Quickly search your
+  = link_to "GitHub gists.", "http://gist.github.com"
+  Login
+  = link_to "with OAuth", "/auth/github"
+  to get started.
+
+/ .reference
+/   = image_tag "http://f.cl.ly/items/2Y1c2z2c0Y3k0k2f3g0x/Image%202012-10-19%20at%203.02.25%20PM.png"

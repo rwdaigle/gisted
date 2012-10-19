@@ -7,12 +7,19 @@
     %meta{"http-equiv" => "X-UA-Compatible", :content => "IE=edge,chrome=1"}
     %meta{:name => "viewport", :content => "width=device-width, initial-scale=1, maximum-scale=1"}
 
-    = stylesheet_link_tag "https://a248.e.akamai.net/assets.github.com/assets/launch-1518f5fc52c018f2a9fe23cbefb309760c533dfa.css", :media => "screen"
     = stylesheet_link_tag :application, :media => "all"
     = javascript_include_tag :application
     = csrf_meta_tags
 
   %body.launch
+    #profile
+      = link_to("logout", logout_path) if user_logged_in?
     #header
       .container
         = yield
+    #footer
+      %span.attributions
+        Gisted is an
+        = link_to "@rwdaigle", "https://twitter.com/rwdaigle"
+        project running on
+        = link_to(image_tag("heroku.png"), "http://heroku.com")
