@@ -1,17 +1,15 @@
 // Initial page load b/f Turbolinks kicks in
 $(function() {
   wireSearch();
-  setInitialElementStates();
+  displayResults();
 });
 
 // Subsequent loads
 $(window).bind('pjax:end', function() {
-  setInitialElementStates();
+  displayResults();
 });
 
-var setInitialElementStates = function() {
-
-  searchField().select();
+var displayResults = function() {
 
   // Make sure results html is displayed
   if($("#results .choice").size() > 0) {
@@ -29,6 +27,16 @@ var wireSearch = function() {
 
   var selectedClass = 'selected';
 
+  searchField().select();
+
+  // Live search
+  searchField().typeWatch({
+    callback: function() { $("#top_search_form").submit(); },
+    wait: 250,
+    highlight: false,
+    captureLength: 2
+  });
+
   // Pass form submits through PJAX
   $("#top_search_form").submit(function() {
     form = $(this);
@@ -37,7 +45,9 @@ var wireSearch = function() {
       container: '#results'
     })
     return false;
-  }); 
+  });
+
+  // Keyboard nav
 
   Mousetrap.bind(['down'], function(e) {
     navigateList('down', $("#results .choice:first"));
@@ -56,7 +66,7 @@ var wireSearch = function() {
     });
   });
 
-  Mousetrap.bind(['/'], function(e) {
+  Mousetrap.bind(['/', 'escape'], function(e) {
     executeOutsideInputFields(e, function() {
       searchField().focus().select();
       $("#results .choice.selected").removeClass(selectedClass);
