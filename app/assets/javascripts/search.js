@@ -1,4 +1,4 @@
-// Initial page load b/f Turbolinks kicks in
+  // Initial page load b/f Turbolinks kicks in
 $(function() {
   wireSearch();
   displayResults();
@@ -30,8 +30,9 @@ var wireSearch = function() {
   searchField().select();
 
   // Live search
+
   searchField().typeWatch({
-    callback: function() { $("#top_search_form").submit(); },
+    callback: function() { submitSearch(); },
     wait: 250,
     highlight: false,
     captureLength: 2
@@ -39,12 +40,25 @@ var wireSearch = function() {
 
   // Pass form submits through PJAX
   $("#top_search_form").submit(function() {
-    form = $(this);
+    submitSearch();
+    return false;
+  });
+
+  var submitSearch = function() {
+    console.log("Submitting search form");
+    form = $("#top_search_form");
     $.pjax({
       url: form.attr('action') + '?' + form.serialize(),
       container: '#results'
-    })
-    return false;
+    });
+  };
+
+  $(window).bind('pjax:start', function() {
+    $(".indicator").css("visibility", "visible");
+  });
+
+  $(window).bind('pjax:end', function() {
+    $(".indicator").css("visibility", "hidden");
   });
 
   // Keyboard nav

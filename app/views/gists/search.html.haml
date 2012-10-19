@@ -8,6 +8,10 @@
       #results.display(style="display: #{!params[:q].blank? ? "block" : "none"};")
         = render :partial => 'results'
 
+.indicator(style="visibility: hidden;")
+  %span.loading
+    %img(src="#{image_path("loader.gif")}")
+
 .avatar
   %a(href="#{current_user.gh_url}")
     %img(src="#{current_user.gh_avatar_url}&s=20")
