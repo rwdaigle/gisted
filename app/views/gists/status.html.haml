@@ -1,12 +1,11 @@
-%h3 Indexing status
-%p
+%span.site-logo(style="margin-top: -3px;")
+  Gisted
+
+.topsearch.command-bar-activated
   = "Indexing #{current_user.gists_count} gists and #{current_user.files_count} files..."
   - if current_user.fetched?
-    %b done
-%p
-  %em
-    This may take a few minutes, depending on the number of gists and files. Please wait for indexing to complete before
-    = link_to("searching", search_gists_path)
+    = link_to("done.", search_gists_path)
+    Re-indexing automatically occurs once day.
 
 / %p
 /   = link_to "Go to gist search", search_gists_path
@@ -18,12 +17,12 @@
     $(function() {
       setTimeout(function() {
         location.reload();
-      }, 1500);
+      }, 2000);
     });
 - else
   :javascript
     $(function() {
       setTimeout(function() {
         location = "#{search_gists_path}";
-      }, 750);
+      }, 4000);
     })
