@@ -78,10 +78,10 @@ class Gist < ActiveRecord::Base
       end
     end
 
-    def reindex
+    def reindex(gists = scoped)
       log({ns: self, fn: __method__}) do
-        find_each { |gist| gist.update_index }
-        tire.index.refresh
+        tire.index.import gists
+        # tire.index.refresh  # @nz said this wasn't needed
       end
     end
 

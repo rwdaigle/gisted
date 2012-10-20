@@ -30,9 +30,8 @@ class User < ActiveRecord::Base
     def refresh_index(user_id)
       user = User.find(user_id)
       log({ns: self, fn: __method__}, user) do
-        user.gists.each { |gist| gist.update_index }
+        Gist.reindex(user.gists)
       end
-      Gist.tire.index.refresh
     end
 
     def fetched!(user_id)
