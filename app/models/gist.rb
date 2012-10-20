@@ -8,7 +8,7 @@ class Gist < ActiveRecord::Base
   belongs_to :user
   has_many :files, :class_name => 'GistFile', :dependent => :delete_all
 
-  index_name BONSAI_INDEX_NAME
+  index_name ELASTICSEARCH_INDEX_NAME
 
   mapping do
     indexes :description, :analyzer => 'snowball', :boost => 10

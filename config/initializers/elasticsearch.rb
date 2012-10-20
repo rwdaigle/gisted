@@ -1,11 +1,10 @@
 require 'yajl/json_gem'
 
-Tire.configure do
-  url ENV['BASE_BONSAI_URL']
-  BONSAI_INDEX_NAME = ENV['BONSAI_INDEX_URL'][/[^\/]+$/]
-  # url ENV['SEARCHBOX_URL']
-  logger STDOUT, :level => ENV['LOG_LEVEL']
-end
+ENV['ELASTICSEARCH_URL'] = ENV['BONSAI_URL']
+
+# Optional, but recommended: use a single index per application per environment
+app_name = Rails.application.class.parent_name.underscore.dasherize
+ELASTICSEARCH_INDEX_NAME = "#{app_name}-#{Rails.env}"
 
 module Tire
   class Logger
