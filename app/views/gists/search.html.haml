@@ -4,7 +4,7 @@
 .topsearch.command-bar-activated
   = form_tag(search_gists_path, :method => "get", :id => "top_search_form", :class => "command_bar_form") do
     .commandbar.focused
-      = text_field_tag(:q, params[:q], :size => 50, :class => "mousetrap", :id => "command-bar", :placeholder => "Search your gists:   this AND that \"this phrase\" -excluding", :tabindex => "1", :autocomplete => "off")
+      = text_field_tag(:q, params[:q], :size => 50, :class => "mousetrap", :id => "command-bar", :placeholder => "Search your gists:   this AND that \"this phrase\" -excluding +including", :tabindex => "1", :autocomplete => "off")
       #results.display(style="display: #{!params[:q].blank? ? "block" : "none"};")
         = render :partial => 'results'
 
