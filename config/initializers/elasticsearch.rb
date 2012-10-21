@@ -4,7 +4,7 @@ ENV['ELASTICSEARCH_URL'] = ENV['BONSAI_URL'] || ENV['SEARCHBOX_URL']
 
 # Optional, but recommended: use a single index per application per environment
 app_name = Rails.application.class.parent_name.underscore.dasherize
-ELASTICSEARCH_INDEX_NAME = "#{app_name}-#{Rails.env}"
+ELASTICSEARCH_INDEX_NAME = ENV['ELASTICSEARCH_INDEX_NAME']
 
 module Tire
   class Logger
