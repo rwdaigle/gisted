@@ -1,3 +1,6 @@
-%h4 Oops!
-%p= params[:message]
-%p= link_to "Go back", root_path
+%span.site-logo(style="margin-top: -3px;")
+  Gisted
+
+.topsearch.command-bar-activated
+  = "GitHub and Gisted can't agree on who you are: \"#{params[:message]}\"."
+  = link_to "Care for another spin?", root_path
