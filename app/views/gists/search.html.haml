@@ -7,6 +7,9 @@
       = text_field_tag(:q, params[:q], :size => 50, :class => "mousetrap", :id => "command-bar", :placeholder => "Search your gists:   this AND that \"this phrase\" -excluding +including", :tabindex => "1", :autocomplete => "off")
       #results.display(style="display: #{!params[:q].blank? ? "block" : "none"};")
         = render :partial => 'results'
+      #search-error.display
+        .error There was an error with your search. For this, <a href="https://twitter.com/rwdaigle">@rwdaigle</a> will mercilessly flog himself.
+        .timeout It seems your search is taking longer than <a href="https://twitter.com/rwdaigle">@rwdaigle</a> finds acceptable. Hold on, it's here somewhere...
 
 .indicator(style="visibility: hidden;")
   %span.loading

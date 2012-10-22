@@ -4,11 +4,6 @@ $(function() {
   displayResults();
 });
 
-// Subsequent loads
-$(window).bind('pjax:end', function() {
-  displayResults();
-});
-
 var displayResults = function() {
 
   // Make sure results html is displayed
@@ -39,27 +34,58 @@ var wireSearch = function() {
   });
 
   // Pass form submits through PJAX
-  $("#top_search_form").submit(function() {
-    submitSearch();
-    return false;
+  $("#top_search_form").submit(function(e) {
+    return submitSearch();
   });
 
   var submitSearch = function() {
-    console.log("Submitting search form");
     form = $("#top_search_form");
     $.pjax({
       url: form.attr('action') + '?' + form.serialize(),
-      container: '#results'
+      container: '#results',
+      timeout: 2500
     });
+    return false;
   };
 
   $(window).bind('pjax:start', function() {
     $(".indicator").css("visibility", "visible");
   });
 
-  $(window).bind('pjax:end', function() {
+  $(window).bind('pjax:complete', function() {
     $(".indicator").css("visibility", "hidden");
   });
+
+  $(window).bind('pjax:success', function() {
+    $("#search-error").hide();
+    displayResults();
+  });
+
+  $(window).bind('pjax:timeout', function() {
+    searchTimeout();
+    return false;
+  });
+
+  $(window).bind('pjax:error', function() {
+    searchError();
+    return false;
+  });
+
+  // Search errors
+
+  var searchTimeout = function() {
+    $("#results").hide();
+    $("#search-error").show();
+    $("#search-error .timeout").show();
+    $("#search-error .error").hide();
+  }
+
+  var searchError = function() {
+    $("#results").hide();
+    $("#search-error").show();
+    $("#search-error .error").show();
+    $("#search-error .timeout").hide();
+  }
 
   // Keyboard nav
 
