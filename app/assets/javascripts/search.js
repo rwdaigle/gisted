@@ -107,12 +107,19 @@ var wireSearch = function() {
     });
   });
 
-  Mousetrap.bind(['/', 'escape'], function(e) {
+  Mousetrap.bind(['/'], function(e) {
     executeOutsideInputFields(e, function() {
       searchField().focus().select();
       $("#results .choice.selected").removeClass(selectedClass);
       haltEvent(e);
     });
+  });
+
+  Mousetrap.bind(['escape'], function(e) {
+    searchField().val('').focus().select();
+    $("#results").hide();
+    $("#search-error").hide();
+    haltEvent(e);
   });
 
   var haltEvent = function(event) {
