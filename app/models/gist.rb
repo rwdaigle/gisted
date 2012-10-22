@@ -47,13 +47,13 @@ class Gist < ActiveRecord::Base
       end
     end
 
+    # Clean me up!
     def search(user, q)
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search'}, user)
-      results = []
-      begin
-        results = with_cache(search_cache_key(user, q)) do
-          if(!q.blank?)
-            log({ns: self, fn: __method__, query: q, measure: true}, user) do
+      results = with_cache(search_cache_key(user, q)) do
+        if(!q.blank?)
+          log({ns: self, fn: __method__, query: q, measure: true}, user) do
+            begin
               tire.search do
                 query { string q }
                 fields [:description, :url, :public, :gh_updated_at, :id, :comment_count, :'files.filename', :'files.language']
@@ -62,20 +62,21 @@ class Gist < ActiveRecord::Base
                 highlight :description, :options => { :tag => "<em>" }
                 size 15
               end
+            rescue Tire::Search::SearchRequestFailed => e
+              if(e.message.include?("SearchParseException")) # Swallow malformed queries
+                return []
+              else
+                raise
+              end
             end
-          else
-            []
           end
+        else
+          []
         end
-
-        log({ns: self, fn: __method__, query: q, measure: true, at: 'search-results'}, {:'result-count' => results.size}, user)
-
-      rescue Exception => e
-        Airbrake.notify(e, :params => { :query => q }.merge(user.to_log))
-        log_exception({ns: self, fn: __method__, query: q, measure: true, at: 'exception'}, user)
-      ensure
-        return results
       end
+
+      log({ns: self, fn: __method__, query: q, measure: true, at: 'search-results'}, {:'result-count' => results.size}, user)
+      results
     end
 
     def reindex(gists = scoped)
