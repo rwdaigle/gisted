@@ -1,1 +1,2 @@
 CACHE_VERSION=ENV['CACHE_VERSION']
+CACHE_ACTIVE=ENV['CACHE_ACTIVE'] ? ENV['CACHE_ACTIVE'] == 'true' : Rails.env.production?

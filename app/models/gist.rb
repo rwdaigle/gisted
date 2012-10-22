@@ -51,7 +51,7 @@ class Gist < ActiveRecord::Base
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search'}, user)
       results = []
       begin
-        results = Rails.cache.fetch(search_cache_key(user, q)) do
+        results = with_cache(search_cache_key(user, q)) do
           if(!q.blank?)
             log({ns: self, fn: __method__, query: q, measure: true}, user) do
               tire.search do
@@ -88,6 +88,16 @@ class Gist < ActiveRecord::Base
     def search_cache_key(user, q)
       "#{Rails.env.production? ? CACHE_VERSION : SecureRandom.hex}-user_id:#{user.id}-updated_at:#{user.last_gh_fetch ? user.last_gh_fetch.to_i : "never"}-#{q}"
     end
+
+    def with_cache(key)
+      if CACHE_ACTIVE
+        Rails.cache.fetch(key) do
+          yield
+        end
+      else
+        yield
+      end
+    end
   end
 
   def to_log
@@ -111,4 +121,5 @@ class Gist < ActiveRecord::Base
       files: files.collect(&:indexed_attributes)
     }
   end
+
 end

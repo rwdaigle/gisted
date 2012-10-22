@@ -9,7 +9,7 @@ class GistsController < ApplicationController
   # end
 
   def search
-    if stale?(etag: search_etag, last_modified: current_user.last_gh_fetch)
+    if(!cache? || stale?(etag: search_etag, last_modified: current_user.last_gh_fetch))
       @results = Gist.search(current_user, normalized_query)
       if(feeling_lucky_directive? && lucky_result = @results.first)
         redirect_to lucky_result.url
@@ -42,6 +42,10 @@ class GistsController < ApplicationController
 
   def pjax?
     !request.headers['X-PJAX'].blank?
+  end
+
+  def cache?
+    CACHE_ACTIVE
   end
 
 end
