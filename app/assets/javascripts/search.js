@@ -49,6 +49,7 @@ var wireSearch = function() {
   };
 
   $(window).bind('pjax:start', function() {
+    $("#search-error").hide();
     $(".indicator").css("visibility", "visible");
   });
 
