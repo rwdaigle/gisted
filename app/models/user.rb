@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   has_many :files, :through => :gists
 
   scope :last_fetched_before, lambda { |since| where(["last_gh_fetch < ? OR last_gh_fetch IS NULL", since])}
+  scope :active_auth, where(gh_auth_active: true)
 
   class << self
 

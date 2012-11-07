@@ -6,7 +6,7 @@
       period = ENV['FETCH_INTERVAL_MINS'] ? ENV['FETCH_INTERVAL_MINS'].to_i : 1440
       since = period.minutes.ago
       log({ns: self, fn: __method__}, since: since) do
-        User.last_fetched_before(since).pluck(:id).each do |user_id|
+        User.last_fetched_before(since).active_auth.pluck(:id).each do |user_id|
           QC.enqueue("GistFetcher.fetch_gists", user_id)
         end
       end
