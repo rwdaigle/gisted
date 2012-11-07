@@ -33,18 +33,17 @@
     def fetch_gist_files(user_id, gh_gist_id)
       user = User.find(user_id)
       log({ns: self, fn: __method__, measure: true, gh_gist_id: gh_gist_id}, user) do
-        gh = gh_client(user)
-        GistFile.import(gh.gist(gh_gist_id))
+        gh_client(user) do |gh|
+          GistFile.import(gh.gist(gh_gist_id))
+        end
       end
     end
 
     private
 
     def gh_client(user)
-      client = Octokit::Client.new(:login => user.gh_username, :oauth_token => user.gh_oauth_token, :auto_traversal => true)
       begin
-        client.user # throws exception if oauth not cool
-        yield client
+        yield Octokit::Client.new(:login => user.gh_username, :oauth_token => user.gh_oauth_token, :auto_traversal => true)
       rescue Octokit::Unauthorized => e
         log_exception({ns: self, fn: __method__, measure: true}, user, e)
         user.invalidate_auth!
