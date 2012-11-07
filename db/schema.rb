@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121005200216) do
+ActiveRecord::Schema.define(:version => 20121107020238) do
 
   create_table "gist_files", :force => true do |t|
     t.integer  "gist_id"
@@ -63,9 +63,10 @@ ActiveRecord::Schema.define(:version => 20121005200216) do
     t.string   "gh_oauth_token"
     t.string   "gh_avatar_url"
     t.string   "gh_url"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.datetime "last_gh_fetch"
+    t.boolean  "gh_auth_active", :default => true
   end
 
   add_index "users", ["gh_id"], :name => "index_users_on_gh_id"

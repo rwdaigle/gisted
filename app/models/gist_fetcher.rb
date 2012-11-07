@@ -1,4 +1,4 @@
-class GistFetcher
+  class GistFetcher
 
   class << self
 
@@ -15,18 +15,19 @@ class GistFetcher
     def fetch_gists(user_id)
 
       user = User.find(user_id)
-      gh = gh_client(user)
 
-      log({ns: self, fn: __method__, measure: true}, user) do
-        gh.gists.each do |gh_gist|
-          Gist.import(gh_gist)
+      gh_client(user) do |gh|
+        log({ns: self, fn: __method__, measure: true}, user) do
+          gh.gists.each do |gh_gist|
+            Gist.import(gh_gist)
+          end
+          user.gists.pluck(:gh_id).each do |gh_gist_id|
+            QC.enqueue("GistFetcher.fetch_gist_files", user_id, gh_gist_id)
+          end
         end
-        user.gists.pluck(:gh_id).each do |gh_gist_id|
-          QC.enqueue("GistFetcher.fetch_gist_files", user_id, gh_gist_id)
-        end
+        QC.enqueue("User.refresh_index", user_id)
+        QC.enqueue("User.fetched!", user_id)
       end
-      QC.enqueue("User.refresh_index", user_id)
-      QC.enqueue("User.fetched!", user_id)
     end
 
     def fetch_gist_files(user_id, gh_gist_id)
@@ -40,7 +41,14 @@ class GistFetcher
     private
 
     def gh_client(user)
-      Octokit::Client.new(:login => user.gh_username, :oauth_token => user.gh_oauth_token, :auto_traversal => true)
+      client = Octokit::Client.new(:login => user.gh_username, :oauth_token => user.gh_oauth_token, :auto_traversal => true)
+      begin
+        client.user # throws exception if oauth not cool
+        yield client
+      rescue Octokit::Unauthorized => e
+        log_exception({ns: self, fn: __method__, measure: true}, user, e)
+        user.invalidate_auth!
+      end
     end
 
   end

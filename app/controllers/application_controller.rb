@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
   def current_user
     begin
       @current_user ||= session[:user_id] ? User.find(session[:user_id]) : nil
+      @current_user.gh_auth_active? ? @current_user : nil
     rescue Exception => e
       nil
     end

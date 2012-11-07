@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  attr_accessible :gh_id, :gh_email, :gh_name, :gh_avatar_url, :gh_oauth_token, :gh_url, :gh_username
+  attr_accessible :gh_id, :gh_email, :gh_name, :gh_avatar_url, :gh_oauth_token, :gh_url, :gh_username, :gh_auth_active
 
   has_many :gists, :dependent => :destroy
   has_many :files, :through => :gists
@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
 
       attributes = {
         gh_id: auth.uid, gh_oauth_token: auth.credentials.token, gh_username: auth.info.nickname, gh_name: auth.info.name,
-        gh_email: auth.info.email, gh_avatar_url: auth.info.image, gh_url: auth.info.urls.GitHub
+        gh_email: auth.info.email, gh_avatar_url: auth.info.image, gh_url: auth.info.urls.GitHub, gh_auth_active: true
       }
 
       if(existing_user = User.where(gh_id: auth.uid).first)
@@ -38,6 +38,10 @@ class User < ActiveRecord::Base
       user = User.find(user_id)
       user.fetched!
     end
+  end
+
+  def invalidate_auth!
+    update_attribute(:gh_auth_active, false)
   end
 
   def fetched!
