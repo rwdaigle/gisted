@@ -18,16 +18,15 @@
 
       gh_client(user) do |gh|
         log({ns: self, fn: __method__, measure: true}, user) do
-          gh.gists.each do |gh_gist|
+          gh.gists(nil, since: (user.last_gh_fetch ? user.last_gh_fetch.iso8601.to_s : nil)).each do |gh_gist|
             Gist.import(gh_gist)
-          end
-          user.gists.pluck(:gh_id).each do |gh_gist_id|
-            QC.enqueue("GistFetcher.fetch_gist_files", user_id, gh_gist_id)
+            QC.enqueue("GistFetcher.fetch_gist_files", user_id, gh_gist.id)
           end
         end
         QC.enqueue("User.refresh_index", user_id)
-        QC.enqueue("User.fetched!", user_id)
       end
+
+      user.fetched! # If gist imports fail, this could cause gaps in updated gists...
     end
 
     def fetch_gist_files(user_id, gh_gist_id)
