@@ -8,7 +8,7 @@ class Gist < ActiveRecord::Base
   belongs_to :user
   has_many :files, :class_name => 'GistFile', :dependent => :delete_all
 
-  scope :with_ids, lambda { |ids| ids.any? ? where(["id in (?)", ids]) : "1 = 0"}
+  scope :with_ids, lambda { |ids| where(ids.any? ? ["id in (?)", ids] : "1 = 0") }
 
   index_name ELASTICSEARCH_INDEX_NAME
 
