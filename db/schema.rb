@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121107020238) do
+ActiveRecord::Schema.define(:version => 20121121002434) do
 
   create_table "gist_files", :force => true do |t|
     t.integer  "gist_id"
@@ -39,8 +39,12 @@ ActiveRecord::Schema.define(:version => 20121107020238) do
     t.integer  "comment_count"
     t.datetime "gh_created_at"
     t.datetime "gh_updated_at"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.string   "owner_gh_id"
+    t.string   "owner_gh_username"
+    t.string   "owner_gh_avatar_url"
+    t.boolean  "starred"
   end
 
   add_index "gists", ["gh_id"], :name => "index_gists_on_gh_id"
