@@ -3,7 +3,7 @@ class Gist < ActiveRecord::Base
   include Tire::Model::Search
 
   attr_accessible :gh_id, :user_id, :owner_gh_id, :owner_gh_username, :owner_gh_avatar_url, :description, :url, :git_pull_url, :git_push_url, :public,
-    :comment_count, :gh_created_at, :gh_updated_at, :starred
+    :comment_count, :gh_created_at, :gh_updated_at, :starred, :owned
 
   belongs_to :user
   has_many :files, :class_name => 'GistFile', :dependent => :delete_all
@@ -31,12 +31,13 @@ class Gist < ActiveRecord::Base
     def import(user_id, gh_gist, overrides = {})
 
       user = User.find(user_id)
+      owned = (user.gh_id == gh_gist.user['id'])
       gh_id = gh_gist['id']
 
       attributes = {
         gh_id: gh_id, user_id: user.id, owner_gh_id: gh_gist.user['id'], owner_gh_username: gh_gist.user.login, owner_gh_avatar_url: gh_gist.user.avatar_url,
         description: gh_gist.description, url: gh_gist.html_url, git_push_url: gh_gist.git_push_url,
-        git_pull_url: gh_gist.git_pull_url, public: gh_gist.public, comment_count: gh_gist.comments,
+        git_pull_url: gh_gist.git_pull_url, public: gh_gist.public, comment_count: gh_gist.comments, owned: owned,
         gh_created_at: gh_gist.created_at, gh_updated_at: gh_gist.updated_at
       }.merge(overrides)
 

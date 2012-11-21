@@ -7,7 +7,8 @@
         %span.meta
           - if result.starred?
             = image_tag("star.png")
-          %img(src="#{result.owner_gh_avatar_url}&s=13" title="#{result.owner_gh_username}" alt="#{result.owner_gh_username}")
+          - if !result.owned?
+            %img(src="#{result.owner_gh_avatar_url}&s=13" title="#{result.owner_gh_username}" alt="#{result.owner_gh_username}")
     .hints
       %em keyboard:
       ↑ = up, ↓ = down, enter = follow link, / = search

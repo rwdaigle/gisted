@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(:version => 20121121002434) do
     t.string   "owner_gh_username"
     t.string   "owner_gh_avatar_url"
     t.boolean  "starred"
+    t.boolean  "owned"
   end
 
   add_index "gists", ["gh_id"], :name => "index_gists_on_gh_id"
