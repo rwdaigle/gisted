@@ -81,7 +81,9 @@ class Gist < ActiveRecord::Base
 
     def reindex(gists = scoped)
       log({ns: self, fn: __method__}) do
-        tire.index.import gists
+        gists.find_in_batches(batch_size: ENV['ELASTICSEARCH_IMPORT_BATCH_SIZE'].to_i) do |gist_batch|
+          tire.index.import(gist_batch)
+        end
         # tire.index.refresh  # @nz said this wasn't needed
       end
     end
