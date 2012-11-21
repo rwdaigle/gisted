@@ -8,12 +8,16 @@ class Gist < ActiveRecord::Base
   belongs_to :user
   has_many :files, :class_name => 'GistFile', :dependent => :delete_all
 
+  scope :with_ids, lambda { |ids| ids.any? ? where(["id in (?)", ids]) : "1 = 0"}
+
   index_name ELASTICSEARCH_INDEX_NAME
 
   mapping do
     indexes :description, :analyzer => 'snowball', :boost => 10
     indexes :gh_created_at, type: 'date'
     indexes :user_id, :analyzer => :not_analyzed
+    indexes :owner_gh_username, analyzer: 'keyword'
+    indexes :starred, :analyzer => :not_analyzed
     indexes :files do
       indexes :filename, analyzer: 'standard', :boost => 5
       indexes :content, analyzer: 'snowball'
@@ -75,8 +79,12 @@ class Gist < ActiveRecord::Base
         end
       end
 
+      # Return actual gists, not results
+      gist_ids = results.collect { |r| r.id }.uniq
+      gists = Gist.with_ids(gist_ids)
+
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search-results'}, {:'result-count' => results.size}, user)
-      results
+      gists
     end
 
     def reindex(gists = scoped)
@@ -115,9 +123,12 @@ class Gist < ActiveRecord::Base
   def indexed_attributes
     {
       user_id: user_id,
+      owner_gh_username: owner_gh_username,
+      owner_gh_avatar_url: owner_gh_avatar_url,
       description: description,
       url: url,
       public: public?,
+      starred: starred?,
       gh_created_at: gh_created_at,
       gh_updated_at: gh_updated_at,
       comment_count: comment_count,
