@@ -1,7 +1,8 @@
 namespace :fetch do
 
   task :periodic => :environment do
-    QC.enqueue("GistFetcher.fetch")
+    GistFetcher.fetch
+    QC.enqueue("User.refresh_indexes")    
   end
   
 end

@@ -5,10 +5,12 @@ class Gist < ActiveRecord::Base
   attr_accessible :gh_id, :user_id, :owner_gh_id, :owner_gh_username, :owner_gh_avatar_url, :description, :url, :git_pull_url, :git_push_url, :public,
     :comment_count, :gh_created_at, :gh_updated_at, :starred, :owned
 
-  belongs_to :user
+  belongs_to :user, :touch => true
   has_many :files, :class_name => 'GistFile', :dependent => :delete_all
 
   scope :with_ids, lambda { |ids| where(ids.any? ? ["id in (?)", ids] : "1 = 0") }
+  scope :starred, where(starred: true)
+  scope :not_starred, where(["starred = ? OR starred IS NULL", false])
 
   index_name ELASTICSEARCH_INDEX_NAME
 
@@ -94,7 +96,7 @@ class Gist < ActiveRecord::Base
     end
 
     def search_cache_key(user, q)
-      "#{CACHE_ACTIVE ? CACHE_VERSION : "no-cache"}-user_id:#{user.id}-updated_at:#{user.last_gh_fetch ? user.last_gh_fetch.to_i : "never"}-#{q}"
+      "#{CACHE_ACTIVE ? CACHE_VERSION : "no-cache"}-user_id:#{user.id}-updated_at:#{user.updated_at}-#{q}"
     end
 
     def with_cache(key)

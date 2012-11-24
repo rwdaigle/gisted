@@ -5,7 +5,6 @@ class User < ActiveRecord::Base
   has_many :gists, :dependent => :destroy
   has_many :files, :through => :gists
 
-  scope :last_fetched_before, lambda { |since| where(["last_gh_fetch < ? OR last_gh_fetch IS NULL", since])}
   scope :active_auth, where(gh_auth_active: true)
 
   class << self
@@ -28,25 +27,27 @@ class User < ActiveRecord::Base
       end
     end
 
+    def refresh_indexes
+      User.active_auth.pluck(:id).each do |user_id|
+        refresh_index(user_id)
+      end
+    end
+
     def refresh_index(user_id)
       user = User.find(user_id)
       log({ns: self, fn: __method__}, user) do
         Gist.reindex(user.gists)
       end
     end
+  end
 
-    def fetched!(user_id)
-      user = User.find(user_id)
-      user.fetched!
-    end
+  def last_gist_updated_at(gist_scope = gists)
+    gist = gist_scope.order("gh_updated_at DESC").first
+    gist ? gist.gh_updated_at : nil
   end
 
   def invalidate_auth!
     update_attribute(:gh_auth_active, false)
-  end
-
-  def fetched!
-    update_attribute(:last_gh_fetch, Time.now)
   end
 
   def gists_count
@@ -55,10 +56,6 @@ class User < ActiveRecord::Base
 
   def files_count
     @files_count ||= files.count
-  end
-
-  def fetched?
-    !last_gh_fetch.nil?
   end
 
   def to_log
