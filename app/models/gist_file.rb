@@ -6,9 +6,10 @@ class GistFile < ActiveRecord::Base
 
   class << self
 
-    def import(gh_gist)
+    def import(user_id, gh_gist)
 
-      gist = Gist.where(gh_id: gh_gist['id']).first
+      user = User.find(user_id)
+      gist = user.gists.where(gh_id: gh_gist['id']).first
 
       gh_gist.files.each do |filename, gh_file|
 

@@ -43,7 +43,7 @@ class Gist < ActiveRecord::Base
         gh_created_at: gh_gist.created_at, gh_updated_at: gh_gist.updated_at
       }.merge(overrides)
 
-      if(existing_gist = where(gh_id: gh_id).first)
+      if(existing_gist = user.gists.where(gh_id: gh_id).first)
         log({ns: self, fn: __method__, measure: true, at: 'gist-imported'}, user, existing_gist)
         existing_gist.update_attributes(attributes)
         existing_gist

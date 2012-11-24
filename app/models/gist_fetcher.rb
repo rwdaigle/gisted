@@ -46,7 +46,7 @@
       user = User.find(user_id)
       log({ns: self, fn: __method__, measure: true, gh_gist_id: gh_gist_id}, user) do
         gh_client(user) do |gh|
-          GistFile.import(gh.gist(gh_gist_id))
+          GistFile.import(user_id, gh.gist(gh_gist_id))
         end
       end
     end
