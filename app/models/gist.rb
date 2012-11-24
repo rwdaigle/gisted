@@ -59,7 +59,7 @@ class Gist < ActiveRecord::Base
         if(!q.blank?)
           log({ns: self, fn: __method__, query: q, measure: true}, user) do
             begin
-              tire.search do
+              tire.search :load => true do
                 query { string q }
                 fields [:description, :url, :public, :gh_updated_at, :id, :comment_count, :'files.filename', :'files.language']
                 # sort { by :gh_created_at, 'desc' }
@@ -80,12 +80,8 @@ class Gist < ActiveRecord::Base
         end
       end
 
-      # Return actual gists, not results
-      gist_ids = results.collect { |r| r.id }.uniq
-      gists = Gist.with_ids(gist_ids)
-
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search-results'}, {:'result-count' => results.size}, user)
-      gists
+      results
     end
 
     def reindex(gists = scoped)
