@@ -3,16 +3,16 @@
 
 .topsearch.command-bar-activated
   = "Indexing #{current_user.gists_count} gists and #{current_user.files_count} files..."
-  - if current_user.fetched?
+  - if current_user.indexed?
     = link_to("done.", search_gists_path)
-    Re-indexing automatically occurs once day.
+    Re-indexing will automatically occur.
 
 / %p
 /   = link_to "Go to gist search", search_gists_path
-/   - if !current_user.fetched?
+/   - if !current_user.indexed?
 /     %em (results may not be complete until indexing completes)
 
-- if !current_user.fetched?
+- if !current_user.indexed?
   :javascript
     $(function() {
       setTimeout(function() {

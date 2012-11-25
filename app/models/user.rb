@@ -37,8 +37,17 @@ class User < ActiveRecord::Base
       user = User.find(user_id)
       log({ns: self, fn: __method__}, user) do
         Gist.reindex(user.gists)
+        user.indexed!
       end
     end
+  end
+
+  def indexed!
+    update_attribute(:last_indexed_at, Time.now)
+  end
+
+  def indexed?
+    !last_indexed_at.nil?
   end
 
   def last_gist_updated_at(gist_scope = gists)

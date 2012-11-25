@@ -15,6 +15,7 @@ class SessionsController < ApplicationController
     else
       log({ns: self.class, fn: __method__, measure: true, at: 'first-login'}, user)
       QC.enqueue("GistFetcher.fetch_gists", user.id)
+      QC.enqueue("User.refresh_index", user.id)
       redirect_to status_gists_path
     end
   end
