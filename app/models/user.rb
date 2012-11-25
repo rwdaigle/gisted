@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
     def refresh_index(user_id)
       user = User.find(user_id)
       log({ns: self, fn: __method__}, user) do
-        Gist.reindex(user.gists)
+        Gist.reindex(user.gists.since(user.last_indexed_at))
         user.indexed!
       end
     end

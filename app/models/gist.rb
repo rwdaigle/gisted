@@ -11,6 +11,7 @@ class Gist < ActiveRecord::Base
   scope :with_ids, lambda { |ids| where(ids.any? ? ["id in (?)", ids] : "1 = 0") }
   scope :starred, where(starred: true)
   scope :not_starred, where(["starred = ? OR starred IS NULL", false])
+  scope :since, lambda { |time| time ? where(["updated_at > ?", time]) : scoped }
 
   index_name ELASTICSEARCH_INDEX_NAME
 

@@ -16,6 +16,7 @@
 
       user = User.find(user_id)
       since = user.last_gist_updated_at(user.gists.not_starred)
+      since = since ? (since + 1.second) : since
 
       gh_client(user) do |gh|
         log({ns: self, fn: __method__, measure: true, since: since}, user) do
@@ -31,6 +32,7 @@
 
       user = User.find(user_id)
       since = user.last_gist_updated_at(user.gists.starred)
+      since = since ? (since + 1.second) : since
 
       gh_client(user) do |gh|
         log({ns: self, fn: __method__, measure: true, since: since}, user) do
