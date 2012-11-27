@@ -16,13 +16,13 @@ class Gist < ActiveRecord::Base
   index_name ELASTICSEARCH_INDEX_NAME
 
   mapping do
-    indexes :description, :analyzer => 'snowball', :boost => 10
-    indexes :gh_created_at, type: 'date'
+    indexes :description, :analyzer => 'snowball', :boost => 100
+    indexes :gh_updated_at, type: 'date'
     indexes :user_id, :analyzer => :not_analyzed
     indexes :owner_gh_username, analyzer: 'keyword'
     indexes :starred, :analyzer => :not_analyzed
     indexes :files do
-      indexes :filename, analyzer: 'standard', :boost => 5
+      indexes :filename, analyzer: 'standard', :boost => 10
       indexes :content, analyzer: 'snowball'
       indexes :language, analyzer: 'keyword'
       indexes :file_type, analyzer: 'standard'
@@ -62,13 +62,17 @@ class Gist < ActiveRecord::Base
         if(!q.blank?)
           log({ns: self, fn: __method__, query: q, measure: true}, user) do
             begin
+
+              # Preprocess
+              query_params = preprocess(user, q)
+
               tire.search :load => true do
-                query { string q }
-                fields [:description, :url, :public, :gh_updated_at, :id, :comment_count, :'files.filename', :'files.language']
-                # sort { by :gh_created_at, 'desc' }
-                filter :term, :user_id => user.id
-                highlight :description, :options => { :tag => "<em>" }
-                size 15
+                query { string query_params[:query] }
+                fields query_params[:fields]
+                query_params[:filter].each do |field, value|
+                  filter :term, field => value
+                end
+                size query_params[:size]
               end
             rescue Tire::Search::SearchRequestFailed => e
               if(e.message.include?("SearchParseException")) # Swallow malformed queries
@@ -85,6 +89,24 @@ class Gist < ActiveRecord::Base
 
       log({ns: self, fn: __method__, query: q, measure: true, at: 'search-results'}, {:'result-count' => results.size}, user)
       results
+    end
+
+    def preprocess(user, q)
+
+      # Standard stuff
+      query = {}
+      query[:fields] = [:description, :'files.filename', :'files.content']
+      query[:filter] = {:user_id => user.id}
+      query[:size] = 15
+
+      # Extract "@jonmountjoy" owner syntax from queries
+      if(owner_match = %r{@(\w+)}.match(q))
+        query[:filter][:owner_gh_username] = owner = owner_match[1]
+        q = q.sub("@#{owner}", "")
+      end
+
+      query[:query] = q.blank? ? "*" : q
+      query
     end
 
     def reindex(gists = scoped)
@@ -124,12 +146,9 @@ class Gist < ActiveRecord::Base
     {
       user_id: user_id,
       owner_gh_username: owner_gh_username,
-      owner_gh_avatar_url: owner_gh_avatar_url,
       description: description,
-      url: url,
       public: public?,
       starred: starred?,
-      gh_created_at: gh_created_at,
       gh_updated_at: gh_updated_at,
       comment_count: comment_count,
       files: files.collect(&:indexed_attributes)

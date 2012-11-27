@@ -27,16 +27,16 @@ class User < ActiveRecord::Base
       end
     end
 
-    def refresh_indexes
+    def refresh_indexes(all = false)
       User.active_auth.pluck(:id).each do |user_id|
-        refresh_index(user_id)
+        refresh_index(user_id, all)
       end
     end
 
-    def refresh_index(user_id)
+    def refresh_index(user_id, all = false)
       user = User.find(user_id)
       log({ns: self, fn: __method__}, user) do
-        Gist.reindex(user.gists.since(user.last_indexed_at))
+        Gist.reindex(all ? user.gists : user.gists.since(user.last_indexed_at))
         user.indexed!
       end
     end

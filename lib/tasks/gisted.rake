@@ -10,6 +10,6 @@ namespace :gisted do
     Gist.tire.index.delete
     Gist.tire.index.create
     GistFetcher.fetch
-    QC.enqueue("User.refresh_indexes")
+    QC.enqueue("User.refresh_indexes", true)
   end
 end
