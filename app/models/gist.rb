@@ -8,6 +8,8 @@ class Gist < ActiveRecord::Base
   belongs_to :user, :touch => true
   has_many :files, :class_name => 'GistFile', :dependent => :delete_all
 
+  before_save :check_for_new_comments
+
   scope :with_ids, lambda { |ids| where(ids.any? ? ["id in (?)", ids] : "1 = 0") }
   scope :starred, where(starred: true)
   scope :not_starred, where(["starred = ? OR starred IS NULL", false])
@@ -153,6 +155,14 @@ class Gist < ActiveRecord::Base
       comment_count: comment_count,
       files: files.collect(&:indexed_attributes)
     }
+  end
+
+  private
+
+  def check_for_new_comments
+    if(comment_count_changed?)
+      QC.enqueue("CommentNotifier.gist_commented", id) if comment_count.to_i > comment_count_was.to_i
+    end
   end
 
 end
