@@ -161,6 +161,7 @@ class Gist < ActiveRecord::Base
 
   def check_for_new_comments
     if(comment_count_changed?)
+      log({ns: self, fn: __method__, measure: true, at: 'comment-count-changed'}, self, user)
       QC.enqueue("CommentNotifier.gist_commented", id) if comment_count.to_i > comment_count_was.to_i
     end
   end

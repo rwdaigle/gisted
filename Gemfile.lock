@@ -117,6 +117,8 @@ GEM
     pjax_rails (0.3.3)
       jquery-rails
     polyglot (0.3.3)
+    pony (1.4)
+      mail (> 2.0)
     queue_classic (2.0.1)
       pg (~> 0.14.0)
       scrolls (~> 0.2.1)
@@ -201,6 +203,7 @@ DEPENDENCIES
   omniauth-github
   pg
   pjax_rails
+  pony
   queue_classic
   rack-worker
   rails (= 3.2.8)

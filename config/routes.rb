@@ -14,6 +14,12 @@ Gisted::Application.routes.draw do
   # Though this was an option at one time?
   all = [:index, :show, :new, :create, :edit, :update, :destroy]
 
+  resources :users, :except => all do
+    collection do
+      post 'toggle_notifications'
+    end
+  end
+
   resources :gists, :except => all do
     collection do
       post 'refresh'

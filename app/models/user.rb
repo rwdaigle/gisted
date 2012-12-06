@@ -42,6 +42,11 @@ class User < ActiveRecord::Base
     end
   end
 
+  def toggle_notifications
+    log({ns: self.class, fn: __method__, measure: true, to: !notify_comments}, self)
+    update_attribute(:notify_comments, !notify_comments)
+  end
+
   def indexed!
     update_attribute(:last_indexed_at, Time.now)
   end

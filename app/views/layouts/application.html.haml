@@ -27,6 +27,11 @@
     #profile
       - if user_logged_in?
         %span.last-edited= "Last known gist activity on #{current_user.last_gist_updated_at ? current_user.last_gist_updated_at.to_formatted_s(:short) : 'never'}"
+        %span.notifications
+          - if(current_user.notify_comments?)
+            = link_to("turn off comment notifications", toggle_notifications_users_path, :method => :post)
+          - else
+            = link_to("notify me of gist comments", toggle_notifications_users_path, :method => :post)
         %span.logout= link_to("logout", logout_path) 
     #header
       .container

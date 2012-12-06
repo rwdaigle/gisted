@@ -25,6 +25,7 @@ gem 'newrelic_rpm'
 gem 'newrelic-faraday'
 gem 'airbrake'
 gem 'kanshi', :require => false
+gem 'pony'
 
 gem 'jquery-rails'
 gem 'haml-rails'

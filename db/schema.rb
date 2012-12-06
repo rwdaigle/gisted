@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121125001827) do
+ActiveRecord::Schema.define(:version => 20121206183232) do
 
   create_table "gist_files", :force => true do |t|
     t.integer  "gist_id"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(:version => 20121125001827) do
     t.datetime "updated_at",                        :null => false
     t.boolean  "gh_auth_active",  :default => true
     t.datetime "last_indexed_at"
+    t.boolean  "notify_comments", :default => true
   end
 
   add_index "users", ["gh_id"], :name => "index_users_on_gh_id"
