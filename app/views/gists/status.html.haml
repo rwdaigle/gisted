@@ -2,10 +2,13 @@
   Gisted
 
 .topsearch.command-bar-activated
-  = "Indexing #{current_user.gists_count} gists and #{current_user.files_count} files..."
+  - if(current_user.gists_count > 0)
+    = "Indexing #{current_user.gists_count} gists and #{current_user.files_count} files..."
+  - else
+    Fetching gist metadata. One moment please...
   - if current_user.indexed?
     = link_to("done.", search_gists_path)
-    Re-indexing will automatically occur.
+    Re-indexing will automatically occur in the future on gist updates.
 
 / %p
 /   = link_to "Go to gist search", search_gists_path
@@ -24,5 +27,5 @@
     $(function() {
       setTimeout(function() {
         location = "#{search_gists_path}";
-      }, 4000);
+      }, 5000);
     })

@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  attr_accessible :gh_id, :gh_email, :gh_name, :gh_avatar_url, :gh_oauth_token, :gh_url, :gh_username, :gh_auth_active
+  attr_accessible :gh_id, :gh_email, :gh_name, :gh_avatar_url, :gh_oauth_token, :gh_url, :gh_username, :gh_auth_active, :notify_comments
 
   has_many :gists, :dependent => :destroy
   has_many :files, :through => :gists
@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
         existing_user.update_attributes(attributes)
         existing_user
       else
-        new_user = User.create(attributes)
+        new_user = User.create(attributes.merge(:notify_comments => true))
         log({ns: self, fn: __method__, measure: true, at: 'user-created'}, new_user)
         new_user
       end
