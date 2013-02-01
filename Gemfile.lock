@@ -76,7 +76,7 @@ GEM
       pg
       scrolls (~> 0.2)
       sequel (~> 3.0)
-    lograge (0.0.6)
+    lograge (0.1.2)
       actionpack
       activesupport
     mail (2.4.4)
