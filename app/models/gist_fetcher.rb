@@ -5,8 +5,8 @@
     def fetch
       log({ns: self, fn: __method__}) do
         User.active_auth.pluck(:id).each do |user_id|
-          QC.enqueue("GistFetcher.fetch_gists", user_id)
-          QC.enqueue("GistFetcher.fetch_starred_gists", user_id)
+          QUEUE.enqueue("GistFetcher.fetch_gists", user_id)
+          QUEUE.enqueue("GistFetcher.fetch_starred_gists", user_id)
         end
       end
     end
