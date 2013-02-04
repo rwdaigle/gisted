@@ -76,7 +76,7 @@ GEM
       pg
       scrolls (~> 0.2)
       sequel (~> 3.0)
-    komrade-client (1.0.1)
+    komrade-client (1.0.5)
     lograge (0.1.2)
       actionpack
       activesupport
@@ -193,7 +193,7 @@ DEPENDENCIES
   haml-rails
   jquery-rails
   kanshi
-  komrade-client (= 1.0.1)
+  komrade-client (~> 1.0.1)
   lograge
   memcachier
   newrelic-faraday
