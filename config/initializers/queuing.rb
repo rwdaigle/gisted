@@ -1,2 +1,2 @@
-# QUEUE=QC
-QUEUE=Komrade::Queue
+QUEUE=QC
+# QUEUE=Komrade::Queue

@@ -76,7 +76,6 @@ GEM
       pg
       scrolls (~> 0.2)
       sequel (~> 3.0)
-    komrade-client (1.0.14)
     lograge (0.1.2)
       actionpack
       activesupport
@@ -120,6 +119,8 @@ GEM
     polyglot (0.3.3)
     pony (1.4)
       mail (> 2.0)
+    queue_classic (2.1.1)
+      pg (~> 0.14.1)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -193,7 +194,6 @@ DEPENDENCIES
   haml-rails
   jquery-rails
   kanshi
-  komrade-client (~> 1.0.1)
   lograge
   memcachier
   newrelic-faraday
@@ -204,6 +204,7 @@ DEPENDENCIES
   pg
   pjax_rails
   pony
+  queue_classic
   rack-worker
   rails (~> 3.2.12)
   rake

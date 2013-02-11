@@ -68,11 +68,11 @@ ActiveRecord::Schema.define(:version => 20121206183232) do
     t.string   "gh_oauth_token"
     t.string   "gh_avatar_url"
     t.string   "gh_url"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.boolean  "gh_auth_active",  :default => true
     t.datetime "last_indexed_at"
-    t.boolean  "notify_comments", :default => true
+    t.boolean  "notify_comments", :default => false
   end
 
   add_index "users", ["gh_id"], :name => "index_users_on_gh_id"
