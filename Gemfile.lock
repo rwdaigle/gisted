@@ -91,7 +91,7 @@ GEM
       faraday (< 0.9)
       faraday (>= 0.6)
       newrelic_rpm (~> 3.0)
-    newrelic_rpm (3.4.2.1)
+    newrelic_rpm (3.5.8.72)
     oauth2 (0.8.0)
       faraday (~> 0.8)
       httpauth (~> 0.1)
